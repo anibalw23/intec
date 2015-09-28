@@ -1,0 +1,64 @@
+﻿@model IEnumerable<CalendarioDiplomados.Models.Taller>
+
+
+<p>
+    @*@Html.ActionLink("Create New", "Create", new { diplomadoID = ViewBag.diplomadoID })*@
+    <a class="btn btn-success" style="margin-left:20px;" href="@Url.Action("Create", "Taller", new { diplomadoID = ViewBag.diplomadoID })">
+       Crear Nuevo
+    </a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Módulo 
+        </th>
+        <th>
+           Nombre del Taller
+        </th>
+        <th>Facilitador por defecto</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Modulo.nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Facilitador.nombre)
+            </td>
+
+
+            <td>
+                <a style="margin-left:20px;" href="@Url.Action("Details", "Taller", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
+                    <i class="fa fa-eye" style="font-size:2em"></i>
+                </a>
+                <a style="margin-left:20px;" href="@Url.Action("Edit", "Taller", new { id = item.ID })">
+                    <i class="fa fa-pencil-square-o" style="font-size:2em"></i>
+                </a>
+                <a style="margin-left:20px;" href="@Url.Action("Delete", "Taller", new { id = item.ID })">
+                    <i class="fa fa-trash" style="font-size:2em; color:darkred"></i>
+                </a>
+
+                <a style="margin-left:20px;" href="@Url.Action("TallerFacilitador", "Taller", new { id = item.ID })">
+                    <i class="fa fa-user" style="font-size:2em;"></i>            
+                </a>
+
+
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.ID, diplomadoID = ViewBag.diplomadoID }) |*@
+                @*@Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID }) |
+                <a href="@Url.Action("TallerFacilitador", "Taller", new { id = item.ID })" class="btn btn-warning">
+                    +Asignar Facilitador
+                </a>*@
+            </td>
+        </tr>
+    }
+
+</table>
+

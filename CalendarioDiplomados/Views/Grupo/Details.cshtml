@@ -1,0 +1,15 @@
+﻿@model CalendarioDiplomados.Models.Grupo
+<hr />
+<div>
+    <h2>Grupo: @Html.DisplayFor(model => model.nombre) - @Html.DisplayFor(model => model.Diplomado.nombre)</h2>
+    <hr />
+</div>
+
+
+<div class="panel-group">
+   
+    <div class="panel-body">
+        <h2>Calendario </h2>
+        @Html.Action("CalendarioGrupo", "Calendario", new { grupoID = Model.ID })
+    </div>
+</div>

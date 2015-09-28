@@ -1,0 +1,34 @@
+﻿@model CalendarioDiplomados.Models.Calendario
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+<h2><i class="fa fa-calendar"></i> Calendario - @Html.DisplayFor(model => model.Grupo.nombre)</h2>
+
+<div>
+    <hr />
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+
+<ul class="nav nav-tabs">
+    <li role="presentation" class="active"><a data-toggle="tab" href="#eventos">Eventos</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="eventos" class="tab-pane fade in active">
+        <h3></h3>
+        @Html.Action("EventoCalendario", "Evento", new { calendarioID = Model.ID })
+    </div>
+    
+</div>
+
+
+
+

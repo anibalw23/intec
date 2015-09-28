@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CalendarioDiplomados.Models.Modulo>
+
+
+<p>
+    @Html.ActionLink("Create New", "Create", new { diplomadoID = ViewBag.diplomadoID })
+</p>
+<table class="table">
+    <tr>
+
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID, diplomadoID = ViewBag.diplomadoID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
+
+</table>
+

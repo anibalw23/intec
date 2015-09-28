@@ -1,0 +1,72 @@
+﻿@model CalendarioDiplomados.Models.Evento
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Evento</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Calendario.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Calendario.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Taller.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Taller.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaIncicio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaIncicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaFin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaFin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.duracion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.duracion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.orden)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.orden)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,66 @@
+﻿@model CalendarioDiplomados.Models.Evento
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Evento</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Calendario.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Calendario.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Taller.nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Taller.nombre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaIncicio)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaIncicio)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.fechaFin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.fechaFin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.duracion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.duracion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.orden)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.orden)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

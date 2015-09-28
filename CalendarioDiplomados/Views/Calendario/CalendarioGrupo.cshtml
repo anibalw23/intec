@@ -1,0 +1,46 @@
+﻿@model IEnumerable<CalendarioDiplomados.Models.Calendario>
+
+
+<p>
+    @Html.ActionLink("Nuevo Calendario", "Create", new { grupoID  = ViewBag.grupoID})
+</p>
+<table class="table">
+    <tr>
+       
+        <th>
+            @Html.DisplayNameFor(model => model.nombre)
+        </th>
+
+        <th>
+           Fecha Inicio
+        </th>
+
+        <th>
+            Fecha Fin
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.nombre)
+            </td>
+            <td>
+                Dia @item.fechaInicio.Day/ Mes @item.fechaInicio.Month / Año @item.fechaInicio.Year
+                @*@Html.DisplayFor(modelItem => item.fechaInicio.Month  + item.fechaInicio.DayOfWeek )*@
+            </td>
+            <td>
+                Dia @item.fechaFin.Day / Mes @item.fechaFin.Month /  Año @item.fechaFin.Year
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ID, grupoID = ViewBag.grupoID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+            </td>
+        </tr>
+    }
+
+</table>
+

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CalendarioDiplomados.Models.Diplomado>
+
+@{
+    ViewBag.Title = "Index";
+}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<h2>Lista de Diplomados</h2>
+
+<p>
+    <a href='/Diplomado/Create' class="btn btn-success"><i class="fa fa-plus-circle" style="margin-right:5px;"></i>Crear Nuevo</a>
+
+    
+</p>
+<table class="table">
+    <tr>
+        <th>
+           Nombre
+        </th>
+        <th>
+           Fecha de Inicio
+        </th>
+        <th>
+            Fecha Fin
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fechaInicio)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.fechaFin)
+        </td>
+        <td>
+            @Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
+            @Html.ActionLink("Editar", "Edit", new { id=item.ID }) |          
+            @Html.ActionLink("Borrar", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

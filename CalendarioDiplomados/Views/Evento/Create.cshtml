@@ -1,0 +1,103 @@
+﻿@model CalendarioDiplomados.Models.Evento
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+<h2>Añadir Evento al calendario</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CalendarioID, new { @Value = ViewBag.CalendarioID })
+    <div class="form-horizontal">
+        <h4></h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.fechaIncicio, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.fechaIncicio, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            <div class="col-md-10">
+                Taller
+                @Html.DropDownList("TallerID", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TallerID, "", new { @class = "text-danger" })
+            </div>
+        </div>*@
+
+
+
+        <div class="panel">
+            <div class="panel-heading">
+                <div id="checkboxes">
+                    <h4> Opciones:</h4>
+                    <label for="one"><input name="opcionCheckbox" type="checkbox"  value="1" />Desplazar las demas fechas</label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group" id="eventos">
+            <div id="checkboxes">
+                <h4> Cambiar Dias que se repite:</h4>
+
+                <div class="row">
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isLunes, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isMartes, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isMiercoles, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isJueves, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isViernes, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isSabado, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                    <div class="col-sm-2">
+                        @Html.EditorFor(m => m.isDomingo, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+
+    <script type="text/javascript">
+    $(function () {
+        $("#fechaIncicio").datepicker();
+    });
+    </script>
+
+}
