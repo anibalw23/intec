@@ -362,6 +362,8 @@
     <Content Include="Content\themes\bootstrap\bootstrap-filebutton.less" />
     <Content Include="Content\themes\bootstrap\bootstrap.less" />
     <Content Include="Content\themes\bootstrap\bootstrap.css.map" />
+    <Content Include="Scripts\export\excellentexport.js" />
+    <Content Include="Scripts\export\excellentexport.min.js" />
     <Content Include="Scripts\fullcalendar-scheduler-1.0.0\demos\json\events.json" />
     <Content Include="Scripts\fullcalendar-scheduler-1.0.0\demos\json\resources.json" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
@@ -1536,6 +1538,8 @@
     <Content Include="Scripts\mdd_toolbar.png" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment.js" />
+    <Content Include="Scripts\pivottable\pivot.css" />
+    <Content Include="Scripts\pivottable\pivot.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\validation.js" />
@@ -1651,6 +1655,7 @@
     <Content Include="Views\Chofer\Details.cshtml" />
     <Content Include="Views\Chofer\Edit.cshtml" />
     <Content Include="Views\Chofer\Index.cshtml" />
+    <Content Include="Views\Evento\Informe.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

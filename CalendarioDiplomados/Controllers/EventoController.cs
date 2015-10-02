@@ -38,18 +38,54 @@ namespace CalendarioDiplomados.Controllers
                     eventos.Add(evt);
                 }
             }
-
+            
             var data = eventos;
-            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, start = x.fechaIncicio.Date.ToString("yyyy-MM-dd"), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre });
-            var resources = grupos.Select(x => new { id = x.ID, title = x.nombre, participantes = x.cantidadParticipantes });
+
+            var fechas = eventos.OrderBy(f => f.fechaIncicio).Select(f => f.fechaIncicio.ToShortDateString()).Distinct().ToArray();
+            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, resourceName = x.Calendario.Grupo.nombre,  start = x.fechaIncicio.Date.ToShortDateString(), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre }).OrderBy(r => r.resourceId);
+            var resources = grupos.Select(x => new { id = x.ID, title = x.nombre, participantes = x.cantidadParticipantes});
+            
             var jsonData = new
             {
-                result,
+                fechas = fechas,
+                result,                
                 resources
             };
 
             return Json(jsonData, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult Informe() {
+            return View();
+        }
+
+
+        public JsonResult getEventosByDiplomado()
+        {
+            List<Evento> pcs = new List<Evento>();
+            var eventos = db.Eventoes.OrderBy(f => f.fechaIncicio).Select(x => new { fecha = x.fechaIncicio.Year + "(Año)/" + x.fechaIncicio.Month + "(Mes)/" + x.fechaIncicio.Day + " (Dia)", taller = x.Taller.Modulo.nombre + " " + x.Taller.nombre, grupo = x.Calendario.Grupo.nombre }).ToList();
+            
+            var jsonData = new
+            {
+                Records = pcs
+            };
+
+            return Json(new { Result = "OK", Records = eventos }, JsonRequestBehavior.AllowGet);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

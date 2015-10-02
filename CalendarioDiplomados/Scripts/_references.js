@@ -37,3 +37,5 @@
 /// <reference path="fullcalendar-scheduler-1.0.0/lib/gcal.js" />
 /// <reference path="fullcalendar-scheduler-1.0.0/lib/jquery.min.js" />
 /// <reference path="fullcalendar-scheduler-1.0.0/lib/moment.min.js" />
+/// <reference path="export/excellentexport.js" />
+/// <reference path="pivottable/pivot.js" />

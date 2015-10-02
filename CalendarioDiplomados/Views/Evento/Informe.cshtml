@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "ReportePivotePersonal";
+}
+
+
+
+
+
+<style type="text/css">
+    #loading-indicator {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+    }
+
+    * {
+        font-family: Verdana;
+    }
+
+    .node {
+        border: solid 1px white;
+        font: 10px sans-serif;
+        line-height: 12px;
+        overflow: hidden;
+        position: absolute;
+        text-indent: 2px;
+    }
+</style>
+
+<div class="panel-heading">
+    <h3>Reporte Pivote Personal Docente</h3>
+</div>
+
+<div class="panel-body">
+
+    <div class="form-horizontal">
+        <div class="form-group">
+            <a href="#" id="reportGeneratorId" class="btn btn-default col-sm-offset-4">
+                <span class="glyphicon glyphicon-file" aria-hidden="true"></span> Cargar Datos
+            </a>
+        </div>
+    </div>
+
+
+    <div id="output" style="margin: 10px; max-width:400px;">
+
+    </div>
+    <div class="text-center">
+        <i class="fa fa-cog fa-spin" id="loading-indicator" style="font-size:10em;margin-left:50%; margin-right:50%; margin-top:10%;"></i>
+    </div>
+
+
+</div>
+
+@section Scripts {
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+<link href="~/Scripts/pivottable/pivot.css" rel="stylesheet" />
+<script src="~/Scripts/pivottable/pivot.js"></script>
+
+  <script type="text/javascript">
+      var distritoDropdownVal = "";
+      $(document).ready(function () {
+          $('#loading-indicator').hide();
+
+          $('#reportGeneratorId').click(function () {
+              $("#output").html("");
+              $('#loading-indicator').show();
+              $.getJSON("/Evento/getEventosByDiplomado", function (data) {
+                  $("#output").pivotUI(data.Records, {});
+              }).done(function () {
+                  $('#loading-indicator').hide();
+              });
+          });
+
+
+      });
+
+
+</script>
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
