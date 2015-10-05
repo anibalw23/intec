@@ -9,6 +9,19 @@
 <link href="~/Scripts/fullcalendar-scheduler-1.0.0/scheduler.css" rel="stylesheet" />
 <script src="~/Scripts/export/excellentexport.min.js"></script>
 <style type="text/css">
+
+
+    #panelMayor {
+        background: rgba(255,255,255,1);
+        border-radius: 5px;
+        min-height:1500px;
+    }
+
+    /*body {
+        background-image: url('../../Content/images/backgroundWeb.png');
+        background-repeat: no-repeat;
+        background-size: 2500px 2500px;
+    }*/
     #eventsTableDiv {
         margin: 0px;
         padding: 0px;
@@ -128,112 +141,115 @@
     }
 </style>
 
-<div>
+<div id="panelMayor">
     <div>
-        <h2>
-            <i class="fa fa-graduation-cap"></i>@Html.DisplayFor(model => model.nombre)
-        </h2>
+        <div>
+            <h2>
+                <i class="fa fa-graduation-cap"></i>@Html.DisplayFor(model => model.nombre)
+            </h2>
 
-        <p style="float:right;">
-            <a href="@Url.Action("Edit", "Diplomado", new { id = Model.ID })" class="btn btn-default">
-                Editar
-            </a>
-        </p>
+            <p style="float:right;">
+                <a href="@Url.Action("Edit", "Diplomado", new { id = Model.ID })" class="btn btn-default">
+                    Editar
+                </a>
+            </p>
+        </div>
+
+        <hr />
+        <dl class="dl-horizontal">
+
+            <dt>
+                Fecha de Inicio
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.fechaInicio)
+            </dd>
+
+            <dt>
+                Fecha Fin
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.fechaFin)
+            </dd>
+
+        </dl>
+
+
     </div>
 
-    <hr />
-    <dl class="dl-horizontal">
 
-        <dt>
-            Fecha de Inicio
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.fechaInicio)
-        </dd>
 
-        <dt>
-            Fecha Fin
-        </dt>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a data-toggle="tab" href="#grupos">Grupos</a></li>
+        <li role="presentation"><a data-toggle="tab" href="#modulos">Módulos</a></li>
+        <li role="presentation"><a data-toggle="tab" href="#talleres">Talleres</a></li>
+        <li role="presentation"><a data-toggle="tab" href="#facilitadores">Facilitadores</a></li>
+        <li role="presentation"><a data-toggle="tab" href="#choferes">Choferes</a></li>
+    </ul>
 
-        <dd>
-            @Html.DisplayFor(model => model.fechaFin)
-        </dd>
+    <div class="tab-content">
+        <div id="grupos" class="tab-pane fade in active">
+            <h3></h3>
+            @Html.Action("GruposDiplomado", "Grupo", new { diplomadoId = Model.ID })
+        </div>
+        <div id="modulos" class="tab-pane fade">
+            <h3></h3>
+            @Html.Action("ModuloDiplomado", "Modulo", new { diplomadoID = Model.ID })
+        </div>
 
-    </dl>
+        <div id="talleres" class="tab-pane fade">
+            <h3></h3>
+            @Html.Action("TallerDiplomado", "Taller", new { diplomadoID = Model.ID })
+        </div>
 
+
+        <div id="facilitadores" class="tab-pane fade">
+            <h3></h3>
+            @Html.Action("FacilitadorDiplomado", "Facilitador", new { diplomadoID = Model.ID })
+        </div>
+        <div id="choferes" class="tab-pane fade">
+            <h3></h3>
+            <p>Próximamente</p>
+        </div>
+
+
+
+    </div>
+
+    <div>        
+        <h2> Programación <span style="color:red;font-size:0.5em">Formato de fecha: mes/dia/año</span> </h2> 
+        <a download="eventos.xls" href="#" onclick="return ExcellentExport.excel(this, 'eventsTableDiv', 'eventos');">
+            <i class="fa fa-file-excel-o" style="color:green;"></i> <span style="color:green; font-weight:bold;">Exportar Programación a Excel</span>
+        </a>
+        <div id="eventsTableDiv" style="overflow-x: scroll;">
+            <table id="tableEventos">
+                <thead>
+                    <tr id="trHead">
+                        <th>Grupo</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr></tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+
+
+    @*<div>
+        <h2> Calendario Total</h2>
+        <div id="calendar" style="height:500px;">
+        </div>
+    </div>*@
 
 </div>
-
-
-
-
-<ul class="nav nav-tabs">
-    <li role="presentation" class="active"><a data-toggle="tab" href="#grupos">Grupos</a></li>
-    <li role="presentation"><a data-toggle="tab" href="#modulos">Módulos</a></li>
-    <li role="presentation"><a data-toggle="tab" href="#talleres">Talleres</a></li>
-    <li role="presentation"><a data-toggle="tab" href="#facilitadores">Facilitadores</a></li>
-    <li role="presentation"><a data-toggle="tab" href="#choferes">Choferes</a></li>
-</ul>
-
-<div class="tab-content">
-    <div id="grupos" class="tab-pane fade in active">
-        <h3></h3>
-        @Html.Action("GruposDiplomado", "Grupo", new { diplomadoId = Model.ID })
-    </div>
-    <div id="modulos" class="tab-pane fade">
-        <h3></h3>
-        @Html.Action("ModuloDiplomado", "Modulo", new { diplomadoID = Model.ID })
-    </div>
-
-    <div id="talleres" class="tab-pane fade">
-        <h3></h3>
-        @Html.Action("TallerDiplomado", "Taller", new { diplomadoID = Model.ID })
-    </div>
-
-
-    <div id="facilitadores" class="tab-pane fade">
-        <h3></h3>
-        @Html.Action("FacilitadorDiplomado", "Facilitador", new { diplomadoID = Model.ID })
-    </div>
-    <div id="choferes" class="tab-pane fade">
-        <h3></h3>
-        <p>Próximamente</p>
-    </div>
-
-
-
-</div>
-
-<div>
-    <a download="eventos.xls" href="#" onclick="return ExcellentExport.excel(this, 'eventsTableDiv', 'eventos');">Exportar a Excel</a>
-    <h2> Programación </h2>
-    <div id="eventsTableDiv" style="overflow-x: scroll;">
-        <table id="tableEventos">
-            <thead>
-                <tr id="trHead">
-                    <th>Grupo</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                <tr></tr>
-
-            </tbody>
-        </table>
-
-    </div>
-</div>
-
-
-
-<div>
-    <h2> Calendario Total</h2>
-    <div id="calendar" style="height:500px;">
-    </div>
-</div>
-
-
 
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
@@ -271,7 +287,7 @@
                         for(var k = kmax; k < fechasOrder.length; k++){                           
                             if(fechasOrder[k].date == item.start){
                                 poner = true;                                                                 
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i></td>");
+                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> </td>");
 
                                 kmax = k+1;
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
@@ -290,7 +306,7 @@
                         for(var k = kmax; k < fechasOrder.length; k++){                           
                             if(fechasOrder[k].date == item.start){
                                 poner = true;                                                                 
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i></td>");
+                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> </td>");
 
                                 kmax = k+1;
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);

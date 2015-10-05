@@ -26,7 +26,7 @@
                 <a style="margin-left:20px;" href="@Url.Action("Details", "Grupo", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
                     <i class="fa fa-eye" style="font-size:1.5em"></i>
                 </a>
-                <a style="margin-left:20px;" href="@Url.Action("Edit", "Grupo", new { id = item.ID })">
+                <a style="margin-left:20px;" href="@Url.Action("Edit", "Grupo", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
                     <i class="fa fa-pencil-square-o" style="font-size:1.5em"></i>
                 </a>
                 <a style="margin-left:20px;" href="@Url.Action("Delete", "Grupo", new { id = item.ID })">

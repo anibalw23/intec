@@ -35,6 +35,9 @@ namespace CalendarioDiplomados.Controllers
                     {
                         evt.Taller = db.Tallers.Find(evt.TallerID);
                     }
+                    if(evt.FacilitadorID != null){
+                     evt.Facilitador.nombre = db.Facilitadors.Find(evt.FacilitadorID).nombre;
+                    }                   
                     eventos.Add(evt);
                 }
             }
@@ -42,7 +45,7 @@ namespace CalendarioDiplomados.Controllers
             var data = eventos;
 
             var fechas = eventos.OrderBy(f => f.fechaIncicio).Select(f => f.fechaIncicio.ToShortDateString()).Distinct().ToArray();
-            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, resourceName = x.Calendario.Grupo.nombre,  start = x.fechaIncicio.Date.ToShortDateString(), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre }).OrderBy(r => r.resourceId);
+            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, resourceName = x.Calendario.Grupo.nombre, start = x.fechaIncicio.Date.ToShortDateString(), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre, tallerNombre = x.Taller.Modulo.nombre + " " + x.Taller.nombre }).OrderBy(r => r.resourceId);
             var resources = grupos.Select(x => new { id = x.ID, title = x.nombre, participantes = x.cantidadParticipantes});
             
             var jsonData = new
