@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<style type="text/css">
+    #transparent{
+      background:rgba(255,255,255,0.7);
+      border-radius:25px;
+    }
+    body {
+        background-image: url('../../Content/images/backgroundWeb.png');
+        background-repeat: no-repeat;
+        background-size: 2000px 1500px;
+    }
+</style>
+
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+<html ng-app>
+<body>
+    @*<div class="jumbotron">
+            <h1>AGECAR</h1>
+        </div>*@
+    <div id="transparent" class="panel panel-default col-lg-offset-1" style="margin-top:50px; max-width:800px;">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-2">
+                    <a href="/diplomado">
+                        <img src="~/Content/images/diplomados.png" style="width:150px;height:150px;" />
+                    </a>
+                    <h3 style="font-weight:bolder;">Diplomados</h3>
+                </div>
+
+                <div class="col-md-4">
+                    <a href="/Facilitador">
+                        <img src="~/Content/images/facilitadores.png" style="width:150px;height:150px;" />
+                    </a>
+                    <h3 style="font-weight:bolder;">Facilitadores</h3>
+                </div>
+
+                <div class="col-md-4 col-md-offset-2" style="margin-top:40px;">
+                    <a href="/Chofer">
+                        <img src="~/Content/images/choferes.png" style="width:150px;height:150px;" />
+                    </a>
+                    <h3 style="font-weight:bolder;">Choferes</h3>
+                </div>
+
+                @*<div class="col-md-4">
+                    <h2>Dias de la Semana</h2>
+                    <a href="/DiaSemana">
+                        <i class="fa fa-calendar-plus-o" style="font-size:8em;"></i>
+                    </a>
+                </div>*@
+            </div>
+        </div>
+    </div>
+</body>
+</html>
