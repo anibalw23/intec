@@ -12,7 +12,7 @@ using CalendarioDiplomados.Models;
 
 namespace CalendarioDiplomados.Controllers
 {
-    [Authorize]
+
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;
@@ -140,6 +140,7 @@ namespace CalendarioDiplomados.Controllers
         //
         // GET: /Account/Register
         //[AllowAnonymous]
+        [Authorize]
         public ActionResult Register()
         {
             return View();
