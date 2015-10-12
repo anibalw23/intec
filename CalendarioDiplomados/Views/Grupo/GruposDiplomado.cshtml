@@ -1,12 +1,13 @@
-﻿
-@model IEnumerable<CalendarioDiplomados.Models.Grupo>
+﻿@model IEnumerable<CalendarioDiplomados.Models.Grupo>
 
 
 <p>
-
-    <a href="@Url.Action("Create", "Grupo", new { diplomadoID = ViewBag.diplomadoID })" class="btn btn-success">
-        Crear Grupo
-    </a>
+    @if (User.IsInRole("Administrador"))
+    {
+        <a href="@Url.Action("Create", "Grupo", new { diplomadoID = ViewBag.diplomadoID })" class="btn btn-success">
+            Crear Grupo
+        </a>
+    }
 </p>
 <table class="table">
     <tr>
@@ -26,13 +27,15 @@
                 <a style="margin-left:20px;" href="@Url.Action("Details", "Grupo", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
                     <i class="fa fa-eye" style="font-size:1.5em"></i>
                 </a>
-                <a style="margin-left:20px;" href="@Url.Action("Edit", "Grupo", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
-                    <i class="fa fa-pencil-square-o" style="font-size:1.5em"></i>
-                </a>
-                <a style="margin-left:20px;" href="@Url.Action("Delete", "Grupo", new { id = item.ID })">
-                    <i class="fa fa-trash" style="font-size:1.5em; color:darkred"></i>
-                </a>
-
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a style="margin-left:20px;" href="@Url.Action("Edit", "Grupo", new { id = item.ID, diplomadoID = ViewBag.diplomadoID })">
+                        <i class="fa fa-pencil-square-o" style="font-size:1.5em"></i>
+                    </a>
+                    <a style="margin-left:20px;" href="@Url.Action("Delete", "Grupo", new { id = item.ID })">
+                        <i class="fa fa-trash" style="font-size:1.5em; color:darkred"></i>
+                    </a>
+                }
             </td>
         </tr>
     }

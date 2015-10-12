@@ -11,8 +11,11 @@
     <hr />
 </div>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
-    @Html.ActionLink("Back to List", "Index")
+    @if (User.IsInRole("Administrador"))
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.ID })
+    }
+    @Html.ActionLink("Ir atrás", "Index")
 </p>
 
 
@@ -26,7 +29,7 @@
         <h3></h3>
         @Html.Action("EventoCalendario", "Evento", new { calendarioID = Model.ID })
     </div>
-    
+
 </div>
 
 

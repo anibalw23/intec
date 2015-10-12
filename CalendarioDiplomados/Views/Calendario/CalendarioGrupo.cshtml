@@ -1,18 +1,20 @@
 ﻿@model IEnumerable<CalendarioDiplomados.Models.Calendario>
 
-
-<p>
-    @Html.ActionLink("Nuevo Calendario", "Create", new { grupoID  = ViewBag.grupoID})
-</p>
+@if (User.IsInRole("Administrador"))
+{
+    <p>
+        @Html.ActionLink("Nuevo Calendario", "Create", new { grupoID = ViewBag.grupoID })
+    </p>
+}
 <table class="table">
     <tr>
-       
+
         <th>
             @Html.DisplayNameFor(model => model.nombre)
         </th>
 
         <th>
-           Fecha Inicio
+            Fecha Inicio
         </th>
 
         <th>
@@ -35,12 +37,14 @@
                 Dia @item.fechaFin.Day / Mes @item.fechaFin.Month /  Año @item.fechaFin.Year
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.ID, grupoID = ViewBag.grupoID }) |
                 @Html.ActionLink("Details", "Details", new { id = item.ID }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                @if (User.IsInRole("Administrador"))
+                {
+                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, grupoID = ViewBag.grupoID }) <span>|</span> 
+                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                }
             </td>
         </tr>
     }
 
 </table>
-

@@ -9,12 +9,10 @@
 <link href="~/Scripts/fullcalendar-scheduler-1.0.0/scheduler.css" rel="stylesheet" />
 <script src="~/Scripts/export/excellentexport.min.js"></script>
 <style type="text/css">
-
-
     #panelMayor {
         background: rgba(255,255,255,1);
         border-radius: 5px;
-        min-height:1500px;
+        min-height: 1500px;
     }
 
     /*body {
@@ -149,9 +147,12 @@
             </h2>
 
             <p style="float:right;">
-                <a href="@Url.Action("Edit", "Diplomado", new { id = Model.ID })" class="btn btn-default">
-                    Editar
-                </a>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a href="@Url.Action("Edit", "Diplomado", new { id = Model.ID })" class="btn btn-default">
+                        Editar
+                    </a>
+                }
             </p>
         </div>
 
@@ -219,8 +220,8 @@
 
     </div>
 
-    <div>        
-        <h2> Programación <span style="color:red;font-size:0.5em">Formato de fecha: mes/dia/año</span> </h2> 
+    <div>
+        <h2> Programación <span style="color:red;font-size:0.5em">Formato de fecha: mes/dia/año</span> </h2>
         <a download="eventos.xls" href="#" onclick="return ExcellentExport.excel(this, 'eventsTableDiv', 'eventos');">
             <i class="fa fa-file-excel-o" style="color:green;"></i> <span style="color:green; font-weight:bold;">Exportar Programación a Excel</span>
         </a>
@@ -244,10 +245,10 @@
 
 
     @*<div>
-        <h2> Calendario Total</h2>
-        <div id="calendar" style="height:500px;">
-        </div>
-    </div>*@
+            <h2> Calendario Total</h2>
+            <div id="calendar" style="height:500px;">
+            </div>
+        </div>*@
 
 </div>
 
@@ -268,56 +269,56 @@
                 var tempRecurso = "";
                 //header de las fechas
                 $.each(data.fechas, function(i, value) {
-                    $("#trHead").append("<th id='fecha_" + i +"'>"+ value + "</th>"); 
+                    $("#trHead").append("<th id='fecha_" + i +"'>"+ value + "</th>");
                     var dict = {date: value, orden: i};
                     fechasOrder.push(dict);
                 }),
 
-                
+
                 $.each(data.result, function(j, item) {
-                    var isRepeated =  false; 
-                    var poner = false;                   
+                    var isRepeated =  false;
+                    var poner = false;
 
                     if(tempRecurso != item.resourceName){
                         tempRecurso = item.resourceName;
                         kmax = 0;
-                        $("#tableEventos").append("<tr id='recurso_" + item.resourceId+"' ><td>"+ item.title + "</td>");  
-                        
+                        $("#tableEventos").append("<tr id='recurso_" + item.resourceId+"' ><td>"+ item.title + "</td>");
 
-                        for(var k = kmax; k < fechasOrder.length; k++){                           
+
+                        for(var k = kmax; k < fechasOrder.length; k++){
                             if(fechasOrder[k].date == item.start){
-                                poner = true;                                                                 
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> </td>");
+                                poner = true;
+                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
 
                                 kmax = k+1;
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
                                 break;
                             }
                             else{
-                                poner = false;  
+                                poner = false;
                                 $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                            }        
+                            }
                         }
 
 
                     }
-                    else{                         
-                        for(var k = kmax; k < fechasOrder.length; k++){                           
+                    else{
+                        for(var k = kmax; k < fechasOrder.length; k++){
                             if(fechasOrder[k].date == item.start){
-                                poner = true;                                                                 
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> </td>");
+                                poner = true;
+                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
 
                                 kmax = k+1;
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
                                 break;
                             }
                             else{
-                                poner = false;  
+                                poner = false;
                                 $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
                                 console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                            }        
-                           
+                            }
+
                         }
 
 
@@ -336,8 +337,8 @@
                     if(isRepeated == false){
                         //$("#trHead").append("<th id='evento_" + item.id +"'>"+ item.start + "</th>");
                         eventosArr.push(item);
-                        
-                        
+
+
                     }
 
 

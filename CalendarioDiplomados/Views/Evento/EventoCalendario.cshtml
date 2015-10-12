@@ -3,20 +3,20 @@
 
 
 <style type="text/css">
-    ul {    
-    list-style-type:none;
+    ul {
+        list-style-type: none;
     }
-
-
 </style>
 
 
 
 <p>
-    <a href="@Url.Action("Create", "Evento", new { calendarioID = ViewBag.CalendarioID })" class="btn btn-warning">
-       +Nuevo Evento
-    </a>
-
+    @if (User.IsInRole("Administrador"))
+    {
+        <a href="@Url.Action("Create", "Evento", new { calendarioID = ViewBag.CalendarioID })" class="btn btn-warning">
+            +Nuevo Evento
+        </a>
+    }
 </p>
 
 
@@ -30,23 +30,25 @@
                     <div class="panel-heading">
                         @Html.Hidden("EventoID", value: item.ID)
                         Dia @item.fechaIncicio.Day/ Mes @item.fechaIncicio.Month / Año @item.fechaIncicio.Year
-                        @*@Html.DisplayFor(modelItem => item.fechaIncicio)*@
-                        <a style="margin-left:400px;" href="@Url.Action("Edit", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-success">
-                            <i class="fa fa-pencil-square-o"></i>
-                        </a>
-                        <a href="@Url.Action("Delete", "Evento", new { id = item.ID })" class="btn btn-danger">
-                            <i class="fa fa-trash-o"></i>
-                        </a>
 
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a style="margin-left:400px;" href="@Url.Action("Edit", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-success">
+                                <i class="fa fa-pencil-square-o"></i>
+                            </a>
+                            <a href="@Url.Action("Delete", "Evento", new { id = item.ID })" class="btn btn-danger">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        }
                     </div>
                     <div class="panel-body">
                         <ul>
                             @{
-                                 int count = 0;
-                            }  
+                int count = 0;
+                            }
                             @foreach (var taller in ViewBag.Talleres)
                             {
-                               
+
                                 if (item.TallerID == taller.ID)
                                 {
                                     <li style="font-size:1.5em;">
@@ -59,27 +61,33 @@
                                                 <span>Facilitador:   @item.Facilitador.nombre</span>
                                             }
                                             @*@if (@taller.FacilitadorID != null && @taller.FacilitadorID != 0)
-                                            {
-                                                <span>Facilitador:   @taller.Facilitador.nombre</span>
-                                            }*@
+                                                {
+                                                    <span>Facilitador:   @taller.Facilitador.nombre</span>
+                                                }*@
                                         </p>
                                         @if (count == 0)
                                         {
-                                            <a style="" href="@Url.Action("EditarTaller", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-default">
-                                                <i class="fa fa-plus"></i>Editar Taller
-                                            </a>
-                                        }                        
+                                            if (User.IsInRole("Administrador"))
+                                            {
+                                                <a style="" href="@Url.Action("EditarTaller", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-default">
+                                                    <i class="fa fa-plus"></i>Editar Taller
+                                                </a>
+                                            }
+                                        }
                                     </li>
                                 }
                                 else
                                 {
                                     if (count == 0)
                                     {
-                                        <li>
-                                            <a style="" href="@Url.Action("EditarTaller", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-default">
-                                                <i class="fa fa-plus"></i>Editar Taller
-                                            </a>
-                                        </li>
+                                        if (User.IsInRole("Administrador"))
+                                        {
+                                            <li>
+                                                <a style="" href="@Url.Action("EditarTaller", "Evento", new { id = item.ID, calendarioID = ViewBag.CalendarioID })" class="btn btn-default">
+                                                    <i class="fa fa-plus"></i>Editar Taller
+                                                </a>
+                                            </li>
+                                        }
                                     }
                                 }
                                 count++;
@@ -106,7 +114,7 @@
         </ul>
 
     </div>
-    
+
 </div>
 
 
@@ -124,9 +132,9 @@
             },
 
 
-            receive : function(event, ui) {               
+            receive: function (event, ui) {
                 return true;
-           }
+            }
 
 
 

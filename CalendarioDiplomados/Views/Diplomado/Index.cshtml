@@ -21,11 +21,12 @@
 
 
 <h2 style="color:white;">Lista de Diplomados</h2>
-
-<p>
-    <a href='/Diplomado/Create' class="btn btn-success"><i class="fa fa-plus-circle" style="margin-right:5px;"></i>Crear Nuevo</a>
-</p>
-
+@if (User.IsInRole("Administrador"))
+{
+    <p>
+        <a href='/Diplomado/Create' class="btn btn-success"><i class="fa fa-plus-circle" style="margin-right:5px;"></i>Crear Nuevo</a>
+    </p>
+}
 <div id="transparent" class="panel-default">
     <div class="panel-body">
         <table id="tableDiplomado" class="table">
@@ -59,16 +60,15 @@
                         <a style="margin-left:20px;" href="@Url.Action("Details", "Diplomado", new { id = item.ID })">
                             <i class="fa fa-eye" style="font-size:1.5em"></i>
                         </a>
-                        <a style="margin-left:20px;" href="@Url.Action("Edit", "Diplomado", new { id = item.ID })">
-                            <i class="fa fa-pencil-square-o" style="font-size:1.5em; color:green"></i>
-                        </a>
-                        <a style="margin-left:20px;" href="@Url.Action("Delete", "Diplomado", new { id = item.ID })">
-                            <i class="fa fa-trash" style="font-size:1.5em; color:darkred"></i>
-                        </a>
-
-                        @*@Html.ActionLink("Detalles", "Details", new { id = item.ID }) |
-                        @Html.ActionLink("Editar", "Edit", new { id = item.ID }) |
-                        @Html.ActionLink("Borrar", "Delete", new { id = item.ID })*@
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <a style="margin-left:20px;" href="@Url.Action("Edit", "Diplomado", new { id = item.ID })">
+                                <i class="fa fa-pencil-square-o" style="font-size:1.5em; color:green"></i>
+                            </a>
+                            <a style="margin-left:20px;" href="@Url.Action("Delete", "Diplomado", new { id = item.ID })">
+                                <i class="fa fa-trash" style="font-size:1.5em; color:darkred"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }
