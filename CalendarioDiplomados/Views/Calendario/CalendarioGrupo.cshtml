@@ -2,9 +2,13 @@
 
 @if (User.IsInRole("Administrador"))
 {
-    <p>
+    @*<p>
         @Html.ActionLink("Nuevo Calendario", "Create", new { grupoID = ViewBag.grupoID })
-    </p>
+    </p>*@
+
+    <a href="@Url.Action("Create", "Calendario", new { grupoID = ViewBag.grupoID })" class="btn btn-info">
+        Nuevo Calendario
+    </a>
 }
 <table class="table">
     <tr>
@@ -37,11 +41,11 @@
                 Dia @item.fechaFin.Day / Mes @item.fechaFin.Month /  Año @item.fechaFin.Year
             </td>
             <td>
-                @Html.ActionLink("Details", "Details", new { id = item.ID }) |
+                @Html.ActionLink("ver detalles", "Details", new { id = item.ID }) |
                 @if (User.IsInRole("Administrador"))
                 {
-                    @Html.ActionLink("Edit", "Edit", new { id = item.ID, grupoID = ViewBag.grupoID }) <span>|</span> 
-                    @Html.ActionLink("Delete", "Delete", new { id = item.ID })
+                    @Html.ActionLink("Editar", "Edit", new { id = item.ID, grupoID = ViewBag.grupoID }) <span>|</span> 
+                    @Html.ActionLink("Borrar", "Delete", new { id = item.ID })
                 }
             </td>
         </tr>

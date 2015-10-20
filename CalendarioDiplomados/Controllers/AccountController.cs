@@ -139,8 +139,8 @@ namespace CalendarioDiplomados.Controllers
 
         //
         // GET: /Account/Register
-        //[AllowAnonymous]
-        [Authorize]
+        [AllowAnonymous]
+        //[Authorize]
         public ActionResult Register()
         {
             return View();

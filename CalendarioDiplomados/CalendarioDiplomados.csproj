@@ -188,9 +188,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201509060253293_InitialCreate.cs" />
-    <Compile Include="Migrations\201509060253293_InitialCreate.Designer.cs">
-      <DependentUpon>201509060253293_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201510191826338_InitialCreate.cs" />
+    <Compile Include="Migrations\201510191826338_InitialCreate.Designer.cs">
+      <DependentUpon>201510191826338_InitialCreate.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -377,6 +377,8 @@
     <Content Include="Scripts\export\excellentexport.min.js" />
     <Content Include="Scripts\fullcalendar-scheduler-1.0.0\demos\json\events.json" />
     <Content Include="Scripts\fullcalendar-scheduler-1.0.0\demos\json\resources.json" />
+    <None Include="Properties\PublishProfiles\FileSystemMode.pubxml" />
+    <None Include="Properties\PublishProfiles\test.pubxml" />
     <None Include="Scripts\jquery-2.1.4.intellisense.js" />
     <Content Include="Scripts\filebutton.js" />
     <Content Include="Scripts\fullcalendar-scheduler-1.0.0\CHANGELOG.txt" />
@@ -1676,8 +1678,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201509060253293_InitialCreate.resx">
-      <DependentUpon>201509060253293_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201510191826338_InitialCreate.resx">
+      <DependentUpon>201510191826338_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

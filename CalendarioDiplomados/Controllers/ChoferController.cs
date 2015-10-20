@@ -47,7 +47,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,cedula,nombre")] Chofer chofer)
+        public ActionResult Create([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Chofer chofer)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,cedula,nombre")] Chofer chofer)
+        public ActionResult Edit([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Chofer chofer)
         {
             if (ModelState.IsValid)
             {

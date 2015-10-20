@@ -22,85 +22,58 @@
         @Html.EditorFor(model => model.fechaIncicio, new { htmlAttributes = new { @class = "form-control" } })
 
 
-        <div class="panel">           
+        <div class="panel">
             <div class="panel-heading">
                 <div id="checkboxes">
-                    <h4> Opciones:</h4>
                     <label for="one"><input name="opcionCheckbox" type="checkbox" checked="checked" value="1" />Desplazar los demás talleres</label>
                 </div>
             </div>
-            <div class="form-group" id="eventos">
-                <div id="checkboxes">
-                    <h4> Cambiar Dias que se repite:</h4>
 
-                    <div class="row">
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isLunes, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isMartes, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isMiercoles, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isJueves, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isViernes, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isSabado, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                        <div class="col-sm-2">
-                            @Html.EditorFor(m => m.isDomingo, new { htmlAttributes = new { @class = "form-control" } })
+            <div class="panel-body">
+
+
+                <div class="form-group" style="width:400px;background-color:aliceblue" id="eventos">
+                    <h4 style="text-align:center"> Dias que se repite:</h4>
+                    <div id="checkboxes" style="">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isLunes, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isMartes, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isMiercoles, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isJueves, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isViernes, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isSabado, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                            <div class="col-sm-2">
+                                @Html.EditorFor(m => m.isDomingo, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+
                         </div>
 
                     </div>
-                  
-                    @*<label for="one"><input name="diaCheckbox" type="checkbox" id="lunes" value="1" />Lunes</label>
-                    <label for="two"><input name="diaCheckbox" type="checkbox" id="martes" value="2" />Martes </label>
-                    <label for="three"><input name="diaCheckbox" type="checkbox" id="miercoles" value="3" />Miércoles</label>
-                    <label for="three"><input name="diaCheckbox" type="checkbox" id="jueves" value="4" />Jueves</label>
-                    <label for="three"><input name="diaCheckbox" type="checkbox" id="viernes" value="5" />Viernes</label>
-                    <label for="three"><input name="diaCheckbox" type="checkbox" id="sabado" value="6" />Sábado</label>
-                    <label for="three"><input name="diaCheckbox" type="checkbox" id="domingo" value="7" />Domingo</label>*@
                 </div>
+
             </div>
 
-        </div>
-
-
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.fechaIncicio, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.fechaIncicio, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.fechaIncicio, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-
-      
-
-        @*<div class="form-group">
-            @Html.LabelFor(model => model.TallerID, "TallerID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("TallerID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.TallerID, "", new { @class = "text-danger" })
-            </div>
-        </div>*@
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Save" class="btn btn-default" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Salvar" class="btn btn-warning" />
+                </div>
             </div>
         </div>
     </div>
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

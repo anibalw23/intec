@@ -55,7 +55,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,cedula,nombre")] Facilitador facilitador)
+        public ActionResult Create([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Facilitador facilitador)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +87,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,cedula,nombre")] Facilitador facilitador)
+        public ActionResult Edit([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Facilitador facilitador)
         {
             if (ModelState.IsValid)
             {

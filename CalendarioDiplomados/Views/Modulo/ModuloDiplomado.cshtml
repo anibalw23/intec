@@ -2,10 +2,11 @@
 
 @if (User.IsInRole("Administrador"))
 {
-    <p>
-        @Html.ActionLink("Create New", "Create", new { diplomadoID = ViewBag.diplomadoID })
-    </p>
+    <a href="@Url.Action("Create", "Modulo", new { diplomadoID = ViewBag.diplomadoID })" class="btn btn-info">
+        Crear Módulo
+    </a>
 }
+
 <table class="table">
     <tr>
 

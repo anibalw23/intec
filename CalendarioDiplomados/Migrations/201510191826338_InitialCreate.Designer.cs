@@ -13,7 +13,7 @@ namespace CalendarioDiplomados.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201509060253293_InitialCreate"; }
+            get { return "201510191826338_InitialCreate"; }
         }
         
         string IMigrationMetadata.Source

@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using System.Globalization;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -24,8 +25,8 @@ namespace CalendarioDiplomados.Controllers
             List<Grupo> grupos = new List<Grupo>();
 
 
-            calendarios = db.Calendarios.Where(d => d.Grupo.DiplomadoID == diplomadoID).Include(e => e.eventos).ToList();
-            grupos = db.Grupoes.Where(d => d.DiplomadoID == diplomadoID).ToList();
+            calendarios = db.Calendarios.AsNoTracking().Where(d => d.Grupo.DiplomadoID == diplomadoID).Include(e => e.eventos).ToList();
+            grupos = db.Grupoes.AsNoTracking().Where(d => d.DiplomadoID == diplomadoID).ToList();
 
             foreach (var cal in calendarios)
             {
@@ -44,8 +45,8 @@ namespace CalendarioDiplomados.Controllers
             
             var data = eventos;
 
-            var fechas = eventos.OrderBy(f => f.fechaIncicio).Select(f => f.fechaIncicio.ToShortDateString()).Distinct().ToArray();
-            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, resourceName = x.Calendario.Grupo.nombre, start = x.fechaIncicio.Date.ToShortDateString(), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre, tallerNombre = x.Taller.Modulo.nombre + " " + x.Taller.nombre, Facilitador = (x.Facilitador != null ? x.Facilitador.nombre : "") }).OrderBy(r => r.resourceId);
+            var fechas = eventos.OrderBy(f => f.fechaIncicio).Select(f => f.fechaIncicio.ToString("MMMM dd, yyyy", CultureInfo.CreateSpecificCulture("es-MX"))).Distinct().ToArray();
+            var result = data.Select(x => new { id = x.ID.ToString(), resourceId = x.Calendario.GrupoID, resourceName = x.Calendario.Grupo.nombre, start = x.fechaIncicio.Date.ToString("MMMM dd, yyyy", CultureInfo.CreateSpecificCulture("es-MX")), end = x.fechaFin.Date.ToString("yyyy-MM-dd"), title = "Taller " + x.Calendario.Grupo.nombre, tallerNombre = x.Taller.Modulo.nombre + " " + x.Taller.nombre, Facilitador = (x.Facilitador != null ? x.Facilitador.nombre : "") }).OrderBy(r => r.resourceId);
             var resources = grupos.Select(x => new { id = x.ID, title = x.nombre, participantes = x.cantidadParticipantes});
             
             var jsonData = new
@@ -66,7 +67,7 @@ namespace CalendarioDiplomados.Controllers
         public JsonResult getEventosByDiplomado()
         {
             List<Evento> pcs = new List<Evento>();
-            var eventos = db.Eventoes.OrderBy(f => f.fechaIncicio).Select(x => new { fecha = x.fechaIncicio.Year + "(Año)/" + x.fechaIncicio.Month + "(Mes)/" + x.fechaIncicio.Day + " (Dia)", taller = x.Taller.Modulo.nombre + " " + x.Taller.nombre, grupo = x.Calendario.Grupo.nombre }).ToList();
+            var eventos = db.Eventoes.AsNoTracking().OrderBy(f => f.fechaIncicio).Select(x => new { fecha = x.fechaIncicio.Year + "(Año)/" + x.fechaIncicio.Month + "(Mes)/" + x.fechaIncicio.Day + " (Dia)", taller = x.Taller.Modulo.nombre + " " + x.Taller.nombre, grupo = x.Calendario.Grupo.nombre }).ToList();
             
             var jsonData = new
             {
@@ -81,20 +82,9 @@ namespace CalendarioDiplomados.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
-
         public ActionResult EventoCalendario(int calendarioID)
         {
-            var eventoes = db.Eventoes.Where(c => c.CalendarioID == calendarioID).Include(f => f.Facilitador).Include(t => t.Taller).Include(e => e.Calendario).OrderBy(f => f.fechaIncicio);
+            var eventoes = db.Eventoes.AsNoTracking().Where(c => c.CalendarioID == calendarioID).Include(z => z.Chofer).Include(f => f.Facilitador).Include(t => t.Taller).Include(e => e.Calendario).OrderBy(f => f.fechaIncicio);
             Calendario calendario = db.Calendarios.Find(calendarioID);
 
             List<Taller> talleres = db.Tallers.Where(d => d.Modulo.DiplomadoID == calendario.Grupo.DiplomadoID).ToList();
@@ -108,7 +98,7 @@ namespace CalendarioDiplomados.Controllers
             }
 
             ViewBag.TalleresEventos = talleres;
-            ViewBag.Talleres = db.Tallers.Where(d => d.Modulo.DiplomadoID == calendario.Grupo.DiplomadoID).ToList();
+            ViewBag.Talleres = db.Tallers.AsNoTracking().Where(d => d.Modulo.DiplomadoID == calendario.Grupo.DiplomadoID).ToList();
             return PartialView(eventoes.ToList());
         }
 
@@ -118,6 +108,7 @@ namespace CalendarioDiplomados.Controllers
         public ActionResult EditarTaller(int id, int calendarioID)
         {
             List<Facilitador> facilitadores = new List<Facilitador>();
+            List<Chofer> choferes = new List<Chofer>();
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -144,6 +135,7 @@ namespace CalendarioDiplomados.Controllers
                     Facilitador facilitador = db.Facilitadors.Find(taller.FacilitadorID);
                     facilitadores.Add(facilitador);
                 }
+
             }
             facilitadores = facilitadores.Distinct().ToList();
 
@@ -158,6 +150,8 @@ namespace CalendarioDiplomados.Controllers
 
             ViewBag.TallerID = new SelectList(items, "Value", "Text", evento.TallerID);
             ViewBag.FacilitadorID = new SelectList(itemsFacilitador, "Value", "Text", evento.FacilitadorID);
+            ViewBag.ChoferID = new SelectList(db.Chofers, "ID", "nombre", evento.ChoferID);
+
             //ViewBag.FacilitadorID = new SelectList(facilitadores, "ID", "nombre");
             return View(evento);
         }
@@ -403,6 +397,28 @@ namespace CalendarioDiplomados.Controllers
                     db.SaveChanges();
                     // ----- End Actualizar Datos del Calendario ---
 
+                    //Para actualizar la fecha de fin del diplomado
+                    Diplomado diplomado = db.Diplomadoes.Find(calendario.Grupo.DiplomadoID);
+                    db.Diplomadoes.Attach(diplomado);
+                    var entry = db.Entry(diplomado);
+                    bool fechaDipomadoChanged = false;
+                    if (diplomado.fechaFin < calendario.fechaFin)
+                    {
+                        diplomado.fechaFin = calendario.fechaFin;
+                        entry.Property(e => e.fechaFin).IsModified = true;
+                        fechaDipomadoChanged = true;
+                    }
+                    if (diplomado.fechaInicio > calendario.fechaInicio)
+                    {
+                        diplomado.fechaInicio = calendario.fechaInicio;
+                        entry.Property(e => e.fechaInicio).IsModified = true;
+                        fechaDipomadoChanged = true;
+                    }
+                    if (fechaDipomadoChanged)
+                    {
+                        db.SaveChanges();
+                    }
+                    //End Actualiza fechas del diplomado
                 }
                 else {
                     evento.fechaFin = evento.fechaIncicio;

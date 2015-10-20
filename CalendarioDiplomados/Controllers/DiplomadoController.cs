@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using System.Globalization;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -29,6 +30,7 @@ namespace CalendarioDiplomados.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Diplomado diplomado = db.Diplomadoes.Find(id);
+
             if (diplomado == null)
             {
                 return HttpNotFound();

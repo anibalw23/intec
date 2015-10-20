@@ -58,7 +58,11 @@
                                         <p>
                                             @if (@item.FacilitadorID != null && @item.FacilitadorID != 0)
                                             {
-                                                <span>Facilitador:   @item.Facilitador.nombre</span>
+                                                <span style="color:green;font-weight:bold;">Facilitador:   @item.Facilitador.nombre</span>
+                                            }
+                                            @if (@item.ChoferID != null && @item.ChoferID != 0)
+                                            {
+                                                <span style="margin-left:10px;color:blue;">Conductor:   @item.Chofer.nombre</span>
                                             }
                                             @*@if (@taller.FacilitadorID != null && @taller.FacilitadorID != 0)
                                                 {

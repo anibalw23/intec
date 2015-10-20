@@ -13,12 +13,12 @@ namespace CalendarioDiplomados.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
-            ContextKey = "CalendarioDiplomados.Models.ApplicationDbContext";
         }
 
         protected override void Seed(CalendarioDiplomados.Models.ApplicationDbContext context)
         {
-
+            //  This method will be called after migrating to the latest version.
+            //Crea el rol de Administrador
             if (!context.Roles.Any(r => r.Name == "Administrador"))
             {
                 var store = new RoleStore<IdentityRole>(context);
@@ -26,7 +26,7 @@ namespace CalendarioDiplomados.Migrations
                 var role = new IdentityRole { Name = "Administrador" };
                 manager.Create(role);
             }
-
+            //Crea el rol de Visualizador
             if (!context.Roles.Any(r => r.Name == "Visualizador"))
             {
                 var store = new RoleStore<IdentityRole>(context);
@@ -35,26 +35,26 @@ namespace CalendarioDiplomados.Migrations
                 manager.Create(role);
             }
 
-            if (!(context.Users.Any(u => u.UserName == "admin@admin.com")))
+            if (!context.Users.Any(u => u.UserName == "admin@admin.com"))
             {
-                var userStore = new UserStore<ApplicationUser>(context);
-                var userManager = new UserManager<ApplicationUser>(userStore);
-                var userToInsert = new ApplicationUser { UserName = "admin@admin.com", PhoneNumber = "0797697898" };
-                userManager.Create(userToInsert, "adminIntec451065");
-                userManager.AddToRole(userToInsert.Id, "Administrador");
+                var store = new UserStore<ApplicationUser>(context);
+                var manager = new UserManager<ApplicationUser>(store);
+                var user = new ApplicationUser { UserName = "admin@admin.com" };
+
+                manager.Create(user, "adminIntec451065");
+                manager.AddToRole(user.Id, "Administrador");
             }
 
-
-            if (!(context.Users.Any(u => u.UserName == "visual@visual.com")))
+            if (!context.Users.Any(u => u.UserName == "visual@visual.com"))
             {
-                var userStore = new UserStore<ApplicationUser>(context);
-                var userManager = new UserManager<ApplicationUser>(userStore);
-                var userToInsert = new ApplicationUser { UserName = "visual@visual.com", PhoneNumber = "0797697898" };
-                userManager.Create(userToInsert, "visualIntec451065");
-                userManager.AddToRole(userToInsert.Id, "Visualizador");
+                var store = new UserStore<ApplicationUser>(context);
+                var manager = new UserManager<ApplicationUser>(store);
+                var user = new ApplicationUser { UserName = "visual@visual.com" };
+
+                manager.Create(user, "visualIntec451065");
+                manager.AddToRole(user.Id, "Visualizador");
             }
-
-
+            
         }
     }
 }

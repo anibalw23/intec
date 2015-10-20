@@ -38,6 +38,10 @@ namespace CalendarioDiplomados.Models
         public int? FacilitadorID { get; set; }
         public virtual Facilitador Facilitador { get; set; }
 
+        [DisplayName("Facilitador")]
+        public int? ChoferID { get; set; }
+        public virtual Chofer Chofer { get; set; }
+
         //Dias que se repite
         [DisplayName("Lunes")]
         public bool isLunes { get; set; }
