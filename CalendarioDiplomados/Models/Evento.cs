@@ -14,12 +14,11 @@ namespace CalendarioDiplomados.Models
         public int ID { get; set; }
 
         [DataType(DataType.DateTime)]
-        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [DisplayName("Fecha de Inicio")]
+        
         public DateTime fechaIncicio { get; set; }
 
         [DataType(DataType.DateTime)]
-        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         [DisplayName("Fecha de Fin")]
         public DateTime fechaFin { get; set; }
         public int duracion { get; set; }

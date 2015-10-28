@@ -27,16 +27,16 @@
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group">           
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fechaInicio, new { htmlAttributes = new { @class = "form-control" } })
+                <span style="font-weight:bold">Fecha de Inicio:</span> <input name="fechaInicio" id="fechaInicioDate"  class="form-control" value="@Model.fechaInicio.ToString("dd-MMMM-yyyy")" />
                 @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-10">
-                @Html.EditorFor(model => model.fechaFin, new { htmlAttributes = new { @class = "form-control" } })
+                <span style="font-weight:bold">Fecha de Fin:</span><input name="fechaFin" id="fechaFinDate"  class="form-control" value="@Model.fechaFin.ToString("dd-MMMM-yyyy")" />
                 @Html.ValidationMessageFor(model => model.fechaFin, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -60,8 +60,8 @@
 
     <script type="text/javascript">
     $(function () {
-        $("#fechaInicio").datepicker();
-        $("#fechaFin").datepicker();
+        $("#fechaInicioDate").datepicker({ dateFormat: 'dd-mm-yy' });
+        $("#fechaFinDate").datepicker({ dateFormat: 'dd-mm-yy' });
     });
     </script>
 

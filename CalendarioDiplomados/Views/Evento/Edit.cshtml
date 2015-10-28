@@ -5,7 +5,7 @@
 }
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
 <h2>Cambiar Fecha de Evento </h2>
-<h4> @Model.Taller.nombre</h4>
+@*<h4> @Model.Taller.nombre</h4>*@
 
 @using (Html.BeginForm())
 {
@@ -19,8 +19,8 @@
         @Html.HiddenFor(model => model.TallerID)
         @Html.HiddenFor(model => model.CalendarioID, new { @Value = ViewBag.CalendarioID })
 
-        @Html.EditorFor(model => model.fechaIncicio, new { htmlAttributes = new { @class = "form-control" } })
-
+        @*@Html.EditorFor(model => model.fechaIncicio, new { htmlAttributes = new { @class = "form-control", @id = "fechaIncicioDate" } })*@
+        <input name="fechaIncicio" id="fechaIncicioDate" class="form-control"  value="@Model.fechaIncicio.ToString("dd-MMMM-yyyy")"/>
 
         <div class="panel">
             <div class="panel-heading">
@@ -81,8 +81,8 @@
     @Scripts.Render("~/bundles/jqueryui")
 
 <script type="text/javascript">
-    $(function () {       
-        $("#fechaIncicio").datepicker();
+    $(document).ready(function () {
+        $("#fechaIncicioDate").datepicker({ dateFormat: 'dd-mm-yy' });
     });
 </script>
 

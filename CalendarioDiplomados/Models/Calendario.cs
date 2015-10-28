@@ -11,11 +11,11 @@ namespace CalendarioDiplomados.Models
         public int ID { get; set; }
         public string nombre { get; set; }
 
-        //[DataType(DataType.Date)]
+        [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime fechaInicio { get; set; }
 
-        //[DataType(DataType.Date)]
+        [DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime fechaFin { get; set; }
 
