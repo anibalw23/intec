@@ -4,12 +4,114 @@
     <h2>Grupo: @Html.DisplayFor(model => model.nombre) - @Html.DisplayFor(model => model.Diplomado.nombre)</h2>
     <hr />
 </div>
-
+<link href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 
 <div class="panel-group">
-   
-    <div class="panel-body">
+
+    <div class="panel-body" style="">
         <h2>Calendario </h2>
         @Html.Action("CalendarioGrupo", "Calendario", new { grupoID = Model.ID })
     </div>
+
+    <div class="panel-body">
+        <h2>Participantes </h2>
+        <a  href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("CreateByGrupo", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Crear Nuevo..
+        </a>
+
+        <a style="background-color:green; color:white;"  href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("InscribirParticipante", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
+            <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir..
+        </a>
+        <table class="table">
+            <tr>
+                <th>Nombre</th>
+                <th>Cédula</th>
+                <th>Teléfono</th>
+                <th></th>
+            </tr>
+            @foreach (var item in Model.participantes)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.cedula)
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.telefono)</td>
+                    <td>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            @*@Html.ActionLink("Desinscribir", "DesInscribirParticipante", "Participante", new { grupoID = Model.ID, participanteID = item.ID, @class = "btnDesinscribir" }, null)*@
+                            <a  style="background-color:red; color:white;" href="#" id="btnDesinscribir" onclick="Desinscribir(@Model.ID, @item.ID)" class="btn btn-default">
+                                <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Desinscribir..
+                            </a>
+                        }
+                    </td>
+                </tr>
+
+            }
+
+        </table>
+    </div>
 </div>
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dialog" title="Confirmation Required">
+    Desea desinscribir a este participante?
+</div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+
+    <script type="text/javascript">
+        function showBLPopup(url, title) {
+            $('#modalBody')
+                .load(url,
+                        function () {
+                            $('#CreateModal').modal({ show: true, backdrop: true });
+                        })
+        };
+
+        (function ($) {
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+
+           
+
+           
+        })(jQuery);
+
+        function Desinscribir(grupoId, participanteId){
+
+            $("#dialog").dialog('option', 'buttons', {
+                "Confirm": function () {
+                    $.ajax({
+                        url: "/Participante/DesInscribirParticipante?grupoID=" + grupoId + "&participanteID=" + participanteId,
+                        type: "POST",
+                        success: function (result) {
+                            $("#dialog").dialog("close");
+                        }
+                    });
+                },
+                "Cancel": function () {
+                    $(this).dialog("close");
+                }
+            });
+            $("#dialog").dialog("open");
+        }
+
+
+
+    </script>
+}

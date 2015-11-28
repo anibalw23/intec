@@ -1,0 +1,92 @@
+﻿@{
+    ViewBag.Title = "Inscribir Participantes";
+}
+
+
+<link href="~/Scripts/jqueryMultiSelect/jquery.multiselect.css" rel="stylesheet" />
+<link href="~/Scripts/jqueryMultiSelect/jquery.multiselect.filter.css" rel="stylesheet" />
+
+
+
+
+
+<style type="text/css">
+    .dropdown-menu {
+        min-width: 500px;
+    }
+</style>
+
+<div class="panel-heading">
+    <h3>@ViewBag.Title</h3>
+</div>
+
+@Html.Hidden("grupoID", new { Value = @ViewBag.grupoID })
+
+<div class="panel-body">
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.Label("Participante", new { @class = "control-label col-sm-3" })
+            <div class="col-sm-4">
+                <select id="personas_multiselectID" style="width:300px;" name="personaId" class="form-control" multiple="multiple"></select>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="panel-footer">
+    <button type="submit" value="Create" class="btn btn-primary" id="btnSave">
+        <span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span> Inscribir
+    </button>
+</div>
+
+@section  Scripts{
+    
+    }
+
+<script type="text/javascript">
+
+    (function () {
+        //$("personas_multiselectID").multiselect();
+        $.ajax({
+            type: "POST",
+            url: "/Participante/GetParticipantes",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (i, data) {
+                    $("#personas_multiselectID").append("<option value='" + data.value + "'>" + data.label + "</option>");
+                });
+
+            }
+        });
+
+        $('#btnSave').on('click', function () {
+
+            var grupoId = $("#grupoID").val();
+            var selectedParticipantes = "";
+
+            $("#personas_multiselectID option:selected").each(function () {
+                selectedParticipantes = selectedParticipantes + $(this).val() + ",";
+            });
+            selectedParticipantes = selectedParticipantes.replace(/,\s*$/, "");
+
+            console.log("grupoId = " + grupoId);
+            console.log("selectedParticipantes = " + selectedParticipantes);
+            $.ajax({
+                url: "/Participante/InscribirParticipante?grupoID=" + grupoId + "&participantesID=" + selectedParticipantes,
+                type: "POST",
+                success: function (result) {
+                    $('#CreateModal').modal('toggle');
+                }
+            });
+        });
+
+
+
+    })(jQuery);
+
+</script>
+
+

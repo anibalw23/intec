@@ -47,5 +47,7 @@ namespace CalendarioDiplomados.Models
         public System.Data.Entity.DbSet<CalendarioDiplomados.Models.Facilitador> Facilitadors { get; set; }
 
         public System.Data.Entity.DbSet<CalendarioDiplomados.Models.Chofer> Chofers { get; set; }
+
+        public System.Data.Entity.DbSet<CalendarioDiplomados.Models.Participante> Participantes { get; set; }
     }
 }

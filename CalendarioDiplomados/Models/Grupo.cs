@@ -16,5 +16,7 @@ namespace CalendarioDiplomados.Models
         public int DiplomadoID { get; set; }
 
         public virtual ICollection<Calendario> calendarios { get; set; }
+
+        public virtual ICollection<Participante> participantes { get; set; }
     }
 }

@@ -184,6 +184,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ModuloController.cs" />
+    <Compile Include="Controllers\ParticipanteController.cs" />
     <Compile Include="Controllers\TallerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -205,6 +206,7 @@
     <Compile Include="Models\Inputs.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Modulo.cs" />
+    <Compile Include="Models\Participante.cs" />
     <Compile Include="Models\Recurrencia.cs" />
     <Compile Include="Models\Taller.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -215,10 +217,13 @@
     <Compile Include="Utility\Validation.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-multiselect.css" />
+    <Content Include="Content\bootstrap-multiselect.js" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap\bootstrap-multiselect.css" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\images\agenda15.ico" />
     <Content Include="Content\images\backgroundWeb.png" />
@@ -1538,6 +1543,10 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.css" />
+    <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.filter.css" />
+    <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.filter.min.js" />
+    <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.min.js" />
     <Content Include="Scripts\less-1.4.1.min.js" />
     <Content Include="Scripts\markdown.js" />
     <Content Include="Scripts\MarkdownDeep License.txt" />
@@ -1669,6 +1678,14 @@
     <Content Include="Views\Chofer\Edit.cshtml" />
     <Content Include="Views\Chofer\Index.cshtml" />
     <Content Include="Views\Evento\Informe.cshtml" />
+    <Content Include="Views\Participante\Create.cshtml" />
+    <Content Include="Views\Participante\Delete.cshtml" />
+    <Content Include="Views\Participante\Details.cshtml" />
+    <Content Include="Views\Participante\Edit.cshtml" />
+    <Content Include="Views\Participante\Index.cshtml" />
+    <Content Include="Views\Participante\ParticipanteGrupo.cshtml" />
+    <Content Include="Views\Participante\InscribirParticipante.cshtml" />
+    <Content Include="Views\Participante\CreateByGrupo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
