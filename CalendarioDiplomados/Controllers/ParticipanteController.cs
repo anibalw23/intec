@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using CalendarioDiplomados.Models.ViewModels;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -19,6 +20,31 @@ namespace CalendarioDiplomados.Controllers
         {
             return View(db.Participantes.ToList());
         }
+
+        public ActionResult ParticipanteAsistencia(int grupoID, int participanteID)
+        {
+
+            var calendariosGrupo = db.Calendarios.AsNoTracking().Select(x => new {x.GrupoID, x.eventos }).Where(g => g.GrupoID == grupoID).FirstOrDefault();
+            List<Evento> eventos = calendariosGrupo.eventos.ToList();
+            List<Ausencia> ausencias = new List<Ausencia>();
+            List<AsistenciaVM> asistencias = new List<AsistenciaVM>();
+
+            string participanteNombre = db.Participantes.Find(participanteID).nombre;
+
+
+            foreach (var evt in eventos) {
+                AsistenciaVM asistencia = new AsistenciaVM();
+                asistencia.eventoID = evt.ID;
+                asistencia.participanteID = participanteID;
+                asistencia.fecha = evt.fechaIncicio.ToShortDateString();
+                asistencia.asistio = db.Ausencias.AsNoTracking().Select(x => new {x.eventoID, x.participanteID }).Where(g => g.eventoID == evt.ID).Any(p => p.participanteID == participanteID) ? false : true;
+                asistencias.Add(asistencia);
+            }
+            ViewBag.eventos = asistencias;
+            return View();
+        }
+
+
 
         public ActionResult ParticipanteGrupo(int grupoID)
         {

@@ -15,11 +15,11 @@
 
     <div class="panel-body">
         <h2>Participantes </h2>
-        <a  href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("CreateByGrupo", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
+        <a href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("CreateByGrupo", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Crear Nuevo..
         </a>
 
-        <a style="background-color:green; color:white;"  href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("InscribirParticipante", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
+        <a style="background-color:green; color:white;" href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("InscribirParticipante", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir..
         </a>
         <table class="table">
@@ -42,9 +42,12 @@
                     <td>
                         @if (User.IsInRole("Administrador"))
                         {
-                            @*@Html.ActionLink("Desinscribir", "DesInscribirParticipante", "Participante", new { grupoID = Model.ID, participanteID = item.ID, @class = "btnDesinscribir" }, null)*@
-                            <a  style="background-color:red; color:white;" href="#" id="btnDesinscribir" onclick="Desinscribir(@Model.ID, @item.ID)" class="btn btn-default">
+                            <a style="background-color:red; color:white;" href="#" id="btnDesinscribir" onclick="Desinscribir(@Model.ID, @item.ID)" class="btn btn-default">
                                 <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Desinscribir..
+                            </a>
+
+                            <a style="background-color:blue; color:white;" href="@Url.Action("ParticipanteAsistencia", "Participante", new { grupoID = Model.ID, participanteID = item.ID })" id="btnAsistencia" class="btn btn-default">
+                                <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>Registro de Asistencia
                             </a>
                         }
                     </td>
@@ -87,9 +90,9 @@
                 modal: true
             });
 
-           
 
-           
+
+
         })(jQuery);
 
         function Desinscribir(grupoId, participanteId){
@@ -101,6 +104,7 @@
                         type: "POST",
                         success: function (result) {
                             $("#dialog").dialog("close");
+                            document.location.reload();
                         }
                     });
                 },

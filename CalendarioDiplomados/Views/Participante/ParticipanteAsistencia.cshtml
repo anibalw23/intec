@@ -1,0 +1,86 @@
+﻿
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+
+<div class="panel-group">
+
+    <div class="panel-body" style="">
+        <h2>Registro de Asistencia del participante </h2>
+    </div>
+
+    <div class="panel-body">
+        
+        <table class="table">
+            <tr>
+                <th>Fecha</th>
+                <th>Asistió</th>
+                <th></th>
+            </tr>
+            @foreach (var item in ViewBag.eventos as ICollection<CalendarioDiplomados.Models.ViewModels.AsistenciaVM>)
+            {
+                <tr>
+                    <td>
+                        @item.fecha
+                    </td>
+                    @if (@item.asistio == true)
+                    {
+                        <td onclick="registrarAusencia(@item.eventoID, @item.participanteID)">
+                            <i style="color:green;font-size:1.5em" class="fa fa-check"></i>
+                        </td>
+                    }
+                    else
+                    {
+                        <td onclick="quitarAusencia(@item.eventoID, @item.participanteID)">
+                            <i style="color:red;font-size:1.5em" class="fa fa-times"></i>
+                        </td>
+
+                    }
+
+                    
+                </tr>
+
+            }
+
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="modalBody">
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div id="dialog" title="Confirmation Required">
+    Desea desinscribir a este participante?
+</div>*@
+
+<script type="text/javascript">
+
+    function registrarAusencia(eventoID, participanteID) {
+        $.ajax({
+            url: "/Ausencia/CreateAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            type: "POST",
+            success: function (result) {
+                alert("Ausencia Registrada!");
+                document.location.reload();
+            }
+        });
+
+    }
+
+    function quitarAusencia(eventoID, participanteID) {
+        $.ajax({
+            url: "/Ausencia/DeleteAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            type: "POST",
+            success: function (result) {
+                alert("Ausencia Eliminada!");
+                document.location.reload();
+            }
+        });
+    }
+
+
+</script>
