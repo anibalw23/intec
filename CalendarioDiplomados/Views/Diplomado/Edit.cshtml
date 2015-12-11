@@ -5,20 +5,23 @@
 }
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
 
-<h2>Editar Diplomado</h2>
+<h2  class="col-lg-offset-2">Editar Diplomado</h2>
 
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
+    <div class="form-horizontal col-lg-offset-2">
         <h4></h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Nombre Diplomado", new { @class = "" })
+            </div>
             <div class="col-md-10">
                 @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
@@ -26,15 +29,21 @@
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Inicio", new { @class = "" })
+            </div>
             <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Inicio:</span> <input name="fechaInicio" id="fechaInicioDate" class="form-control" value="@Model.fechaInicio.ToString("dd-MMMM-yyyy")" />
+                <input name="fechaInicio" id="fechaInicioDate" class="form-control" value="@Model.fechaInicio.ToString("dd-MMMM-yyyy")" />
                 @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Fin", new { @class = "" })
+            </div>
             <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Din:</span> <input name="fechaFin" id="fechaFinDate" class="form-control" value="@Model.fechaFin.ToString("dd-MMMM-yyyy")" />
+                <input name="fechaFin" id="fechaFinDate" class="form-control" value="@Model.fechaFin.ToString("dd-MMMM-yyyy")" />
                 @Html.ValidationMessageFor(model => model.fechaFin, "", new { @class = "text-danger" })
             </div>
         </div>

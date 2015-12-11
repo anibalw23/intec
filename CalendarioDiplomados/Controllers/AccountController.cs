@@ -12,7 +12,7 @@ using CalendarioDiplomados.Models;
 
 namespace CalendarioDiplomados.Controllers
 {
-
+    [Authorize]
     public class AccountController : Controller
     {
         private ApplicationUserManager _userManager;

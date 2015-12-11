@@ -83,7 +83,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,nombre,ModuloID,orden,FacilitadorID")] Taller taller)
+        public ActionResult Create([Bind(Include = "ID,nombre,ModuloID,orden,FacilitadorID,cantidadDias")] Taller taller)
         {
             if (ModelState.IsValid)
             {
@@ -111,7 +111,17 @@ namespace CalendarioDiplomados.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.ModuloID = new SelectList(db.Moduloes.Where(dp => dp.DiplomadoID == diplomadoID), "ID", "nombre");
+
+            List<Modulo> modulos = new List<Modulo>();
+            modulos = db.Moduloes.Where(dp => dp.DiplomadoID == diplomadoID).ToList();
+            
+            List<SelectListItem> list = new List<SelectListItem> ();
+            foreach(var mod in modulos){            
+               list.Add(new SelectListItem() { Text = mod.nombre, Value = mod.ID.ToString(), Selected = (mod.ID == taller.ModuloID) });
+            }
+
+            ViewBag.ModuloID = list;
+            ViewBag.diplomadoID = diplomadoID;
             return View(taller);
         }
 
@@ -120,13 +130,18 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,nombre,ModuloID,orden,FacilitadorID")] Taller taller)
+        public ActionResult Edit([Bind(Include = "ID,nombre,ModuloID,orden,FacilitadorID,cantidadDias,diplomadoId")] Taller taller)
         {
+            string diplomado = Request.Form["diplomadoId"];
+            int diplomadoId = Convert.ToInt32(diplomado);
             if (ModelState.IsValid)
             {
                 db.Entry(taller).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+
+                //var diplomadoId = db.Moduloes.Where(t => t.talleres.Any(i => i.ID == taller.ID)).SingleOrDefault().DiplomadoID;
+
+                return RedirectToAction("Details", "Diplomado", new { id = diplomadoId });
             }
             ViewBag.ModuloID = new SelectList(db.Moduloes.Where(dp => dp.DiplomadoID == taller.Modulo.DiplomadoID), "ID", "nombre");
             return View(taller);

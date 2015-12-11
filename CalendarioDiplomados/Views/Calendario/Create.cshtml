@@ -17,30 +17,37 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.GrupoID, new { @Value = ViewBag.grupoID })
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Nombre Calendario", new { @class = "" })
+            </div>  
             <div >
                 @Html.EditorFor(model => model.nombre, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
             </div>
         </div>
 
-        <div class="form-group">         
-            <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Inicio:</span> 
+        <div class="form-group">  
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Inicio", new { @class = "" })
+            </div>         
+            <div class="col-md-10">               
                 <input name="fechaInicio" id="fechaIncicioDate" type="date" class="form-control" />
                 @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Fin", new { @class = "" })
+            </div>      
             <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Fin:</span> 
-                <input name="fechaFin" id="fechaFinDate" type="date"  class="form-control" />
+                 <input name="fechaFin" id="fechaFinDate" type="date"  class="form-control" />
                 @Html.ValidationMessageFor(model => model.fechaFin, "", new { @class = "text-danger" })
             </div>
         </div>
 
 
-        <div class="form-group" id="eventos">
+        <div class="form-group " id="eventos">
             <h3>Eventos</h3>
             <div id="checkboxes">
                 <h4> Dias que se repite:</h4>
@@ -57,7 +64,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Crear" class="btn btn-default" />
             </div>
         </div>
     </div>

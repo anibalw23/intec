@@ -8,9 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
 using CalendarioDiplomados.Models.ViewModels;
+using System.Text;
+using System.IO;
+using System.Data.OleDb;
 
 namespace CalendarioDiplomados.Controllers
 {
+    [Authorize]
     public class ParticipanteController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -104,6 +108,95 @@ namespace CalendarioDiplomados.Controllers
 
             return RedirectToAction("Details", "Grupo", new { id = grupoID, diplomadoID = grupo.DiplomadoID });
         }
+
+
+        //Inscribir Participantes desde un archivo de Excel
+        public ActionResult ParticipanteInscripcionExcel(int grupoID)
+        {
+            Grupo grupo = db.Grupoes.Find(grupoID);
+
+            return PartialView(grupo);
+        }
+        
+        [AcceptVerbs(HttpVerbs.Post)]
+        [ValidateInput(false)]
+        public ActionResult InscribirParticipanteFromExcelFile(HttpPostedFileBase uploadFile)
+        {
+            StringBuilder textoEmail = new StringBuilder();
+            List<InscripcionVM> inscripciones = new List<InscripcionVM>();
+            Grupo grupo = new Grupo();
+            int grupoId = 0;
+            try
+            {
+                grupoId = Convert.ToInt32(Request["id"]);
+                grupo = db.Grupoes.Find(grupoId);
+                if (uploadFile.ContentLength > 0)
+                {
+                    string filePath = Path.Combine(HttpContext.Server.MapPath("../Uploads/"), Path.GetFileName(uploadFile.FileName));
+                    uploadFile.SaveAs(filePath);
+                    DataSet ds = new DataSet();
+                    string ConnectionString = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + filePath + ";Extended Properties=Excel 12.0;";
+
+                    using (OleDbConnection conn = new System.Data.OleDb.OleDbConnection(ConnectionString))
+                    {
+                        conn.Open();
+                        using (DataTable dtExcelSchema = conn.GetSchema("Tables"))
+                        {
+                            string sheetName = dtExcelSchema.Rows[0]["TABLE_NAME"].ToString();
+                            string query = "SELECT * FROM [" + sheetName + "]";
+                            OleDbDataAdapter adapter = new OleDbDataAdapter(query, conn);
+                            //DataSet ds = new DataSet();
+                            adapter.Fill(ds, "Items");
+                            if (ds.Tables.Count > 0)
+                            {
+                                if (ds.Tables[0].Rows.Count > 0)
+                                {
+                                    string cedula = "";
+                                    string nombre = "";
+
+                                    for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
+                                    {
+                                        InscripcionVM inscripcion = new InscripcionVM();
+                                       
+                                        nombre = ds.Tables[0].Rows[i][0].ToString();
+                                        cedula = ds.Tables[0].Rows[i][1].ToString();
+
+                                        inscripcion.cedula = cedula;
+                                        inscripcion.nombre = nombre;
+
+                                        inscripciones.Add(inscripcion);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception exp)
+            {
+                var dummy = exp.Message;
+            }
+
+            foreach (var i in inscripciones) {
+                Participante participante = new Participante();
+                participante.cedula = i.cedula;
+                participante.nombre = i.nombre;
+                bool isRepeated = grupo.participantes.Any(c => c.cedula == participante.cedula);
+                if (!isRepeated) // Si no esta repetida la cedula
+                {
+                    grupo.participantes.Add(participante);  
+                }                         
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("Details", "Grupo", new { id = grupoId });
+        
+        }
+
+
+
+
 
 
 

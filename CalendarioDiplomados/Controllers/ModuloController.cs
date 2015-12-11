@@ -77,6 +77,7 @@ namespace CalendarioDiplomados.Controllers
                         taller.ModuloID = modulo.ID;
                         taller.nombre = "Taller " + (k + 1).ToString();
                         taller.orden = (orden + k + 1);
+                        taller.cantidadDias = 1;
                         db.Tallers.Add(taller);
                     }
 

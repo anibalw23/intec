@@ -22,6 +22,14 @@
         <a style="background-color:green; color:white;" href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("InscribirParticipante", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes'); return false;">
             <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>Inscribir..
         </a>
+
+        <a style="" href="#" class="btn btn-default" onclick="showBLPopup('@Url.Action("ParticipanteInscripcionExcel", "Participante", new { grupoID = Model.ID, Modal = true })', 'Inscribir Participantes desde Excel'); return false;">
+            <span class="glyphicon glyphicon-import" aria-hidden="true"></span>Importar desde Excel..
+        </a>
+
+
+
+
         <table class="table">
             <tr>
                 <th>Nombre</th>

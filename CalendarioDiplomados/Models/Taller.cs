@@ -14,6 +14,7 @@ namespace CalendarioDiplomados.Models
         public int ModuloID { get; set; }
 
         public int orden { get; set; }
+        public int cantidadDias { get; set; }
 
         public int? FacilitadorID { get; set; }
         public virtual Facilitador Facilitador { get; set; }

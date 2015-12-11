@@ -10,6 +10,7 @@ using CalendarioDiplomados.Models;
 
 namespace CalendarioDiplomados.Controllers
 {
+    [Authorize]
     public class AusenciaController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

@@ -1,7 +1,7 @@
 ﻿@model CalendarioDiplomados.Models.Facilitador
 
 
-<h2>Crear Facilitador</h2>
+<h2 class="col-lg-offset-2">Crear Facilitador</h2>
 
 @using (Html.BeginForm()) 
 {
@@ -11,7 +11,10 @@
         <h4></h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">       
+        <div class="form-group">   
+            <div class="control-label col-md-2">
+                @Html.Label("Cedula", new { @class = "" })
+            </div>    
             <div class="col-md-10">
                 @Html.EditorFor(model => model.cedula, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.cedula, "", new { @class = "text-danger" })
@@ -19,6 +22,9 @@
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Nombre", new { @class = "" })
+            </div>  
             <div class="col-md-10">
                 @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
@@ -26,6 +32,9 @@
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Teléfono", new { @class = "" })
+            </div>  
             <div class="col-md-10">
                 @Html.EditorFor(model => model.telefono, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.telefono, "", new { @class = "text-danger" })
@@ -33,6 +42,9 @@
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Dirección", new { @class = "" })
+            </div>  
             <div class="col-md-10">
                 @Html.EditorFor(model => model.direccion, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.direccion, "", new { @class = "text-danger" })
@@ -41,7 +53,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Crear" class="btn btn-default" />
             </div>
         </div>
     </div>

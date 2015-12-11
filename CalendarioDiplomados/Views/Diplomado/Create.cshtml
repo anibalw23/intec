@@ -4,41 +4,55 @@
     ViewBag.Title = "Create";
 }
 <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
-<h2>Crear Nuevo Diplomado</h2>
+<h2 class="col-lg-offset-2">Crear Nuevo Diplomado</h2>
+<style type="text/css">
+    #formId{
+    }
 
+</style>
 
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
-    <div class="form-horizontal">
+    <div id="formId" class="form-horizontal col-lg-offset-2">
         <h4></h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
-            <div class="col-md-10">
+            <div class="control-label col-md-2">
+                @Html.Label("Nombre", new { @class = "" })
+            </div>
+            
+            <div class="col-md-10 ">
                 @Html.EditorFor(model => model.nombre, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.nombre, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Inicio", new { @class = "" })
+            </div>
             <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Inicio:</span> <input name="fechaInicio" type="date" id="fechaInicioDate" class="form-control" />
+               <input name="fechaInicio" type="date" id="fechaInicioDate" class="form-control" />
                 @Html.ValidationMessageFor(model => model.fechaInicio, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
+            <div class="control-label col-md-2">
+                @Html.Label("Fecha de Fin", new { @class = "" })
+            </div>
             <div class="col-md-10">
-                <span style="font-weight:bold">Fecha de Fin:</span> <input name="fechaFin" type="date" id="fechaFinDate" class="form-control" />
+                <input name="fechaFin" type="date" id="fechaFinDate" class="form-control" />
                 @Html.ValidationMessageFor(model => model.fechaFin, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Crear" class="btn btn-default" />
             </div>
         </div>
     </div>
