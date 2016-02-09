@@ -110,6 +110,24 @@ namespace CalendarioDiplomados.Controllers
         }
 
 
+        [HttpPost]
+        public ActionResult DesinscribirParticipantes(int grupoID, int[] participantes)
+        {
+            Grupo grupo = db.Grupoes.Find(grupoID);
+            foreach(var participanteId in participantes){
+                Participante participanteTemp = db.Participantes.Find(participanteId);
+                grupo.participantes.Remove(participanteTemp);
+                db.SaveChanges();
+            }
+            var JsonData = new
+            {
+                data = "Ok"                
+            };
+
+            return Json(JsonData.data, JsonRequestBehavior.AllowGet);
+        }
+
+
         //Inscribir Participantes desde un archivo de Excel
         public ActionResult ParticipanteInscripcionExcel(int grupoID)
         {
@@ -153,6 +171,7 @@ namespace CalendarioDiplomados.Controllers
                                 {
                                     string cedula = "";
                                     string nombre = "";
+                                    string telefono = "";
 
                                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                                     {
@@ -160,9 +179,11 @@ namespace CalendarioDiplomados.Controllers
                                        
                                         nombre = ds.Tables[0].Rows[i][0].ToString();
                                         cedula = ds.Tables[0].Rows[i][1].ToString();
+                                        telefono = ds.Tables[0].Rows[i][2].ToString();
 
                                         inscripcion.cedula = cedula;
                                         inscripcion.nombre = nombre;
+                                        inscripcion.telefono = telefono;
 
                                         inscripciones.Add(inscripcion);
                                     }
@@ -182,6 +203,7 @@ namespace CalendarioDiplomados.Controllers
                 Participante participante = new Participante();
                 participante.cedula = i.cedula;
                 participante.nombre = i.nombre;
+                participante.telefono = i.telefono;
                 bool isRepeated = grupo.participantes.Any(c => c.cedula == participante.cedula);
                 if (!isRepeated) // Si no esta repetida la cedula
                 {

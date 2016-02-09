@@ -6,8 +6,31 @@
 </div>
 <link href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css" rel="stylesheet" />
 
-<div class="panel-group">
+<style type="text/css">
+    #loadingDiv {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        width: 100%;
+        height: 100%;
+        background-color: #666;
+        background-image: url('../../Content/images/hex-loader2.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+        z-index: 10000000;
+        opacity: 0.4;
+        filter: alpha(opacity=40);
+    }
+</style>
 
+
+
+
+
+
+
+<div class="panel-group">
+    <input type="hidden" id="grupoId" name="grupoId"  value="@Model.ID"/>
     <div class="panel-body" style="">
         <h2>Calendario </h2>
         @Html.Action("CalendarioGrupo", "Calendario", new { grupoID = Model.ID })
@@ -30,8 +53,11 @@
 
 
 
-        <table class="table">
+        <table class="table table-striped" style="margin-top:20px;">
             <tr>
+                <th>
+                    <input type="checkbox" id="selectAll" />
+                </th>
                 <th>Nombre</th>
                 <th>Cédula</th>
                 <th>Teléfono</th>
@@ -40,6 +66,9 @@
             @foreach (var item in Model.participantes)
             {
                 <tr>
+                    <td>
+                        <input type="checkbox" id="participante_@item.ID" value="@item.ID" />
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.nombre)
                     </td>
@@ -64,6 +93,13 @@
             }
 
         </table>
+        <div>
+            <button id="btnSelectAll" type="button" class="btn btn-default">Des/Seleccionar todos</button>
+            <button id="btnDesinscribirSelected" type="button" class="btn btn-default">Desinscribir Seleccionados</button>
+
+        </div>
+
+
     </div>
 </div>
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
@@ -75,8 +111,17 @@
     </div>
 </div>
 
+<div id="dialog-confirm" title="Desinscribir Seleccionados?">
+    <p>Esta seguro que desea des-inscribir a los participantes seleccionados?</p>
+</div>
+
+
 <div id="dialog" title="Confirmation Required">
     Desea desinscribir a este participante?
+</div>
+
+<div id="loadingDiv" style="margin: 0 auto;">
+
 </div>
 
 
@@ -84,6 +129,7 @@
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
+        var checkStatus =  false;
         function showBLPopup(url, title) {
             $('#modalBody')
                 .load(url,
@@ -92,14 +138,56 @@
                         })
         };
 
+        //Main Function
         (function ($) {
+            $("#loadingDiv").hide();
+
             $("#dialog").dialog({
                 autoOpen: false,
                 modal: true
             });
+            //Dialogo de confirmacion
+            $( "#dialog-confirm" ).dialog({
+                resizable: false,
+                height:200,
+                modal: true,
+                autoOpen: false,
+                buttons: {
+                    "Si": function() {
+                        $( this ).dialog( "close" );
+                        var participantesIDs = getParticipantesIdsChecked();
+                        var grupoId = $("#grupoId").val();
+                        console.log("grupoId = " + grupoId);
+                        if(grupoId != undefined && participantesIDs.length > 0){
+                            DesinscribirParticipantes(grupoId, participantesIDs);
+                        }                       
+
+                    },
+                    Cancel: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            });
 
 
+            $("#btnDesinscribirSelected").on('click', function(){
+                $( "#dialog-confirm" ).dialog( "open" );
+            });
 
+
+            $("#btnSelectAll").on('click', function(){
+                if(checkStatus == true){
+                    checkStatus = false;
+                }
+                else
+                {
+                    checkStatus = true;
+                }               
+                $('tbody tr td input[type="checkbox"]').each(function(){
+                    var checked = $(this).prop('checked');
+                    $(this).prop('checked', checkStatus);
+                });      
+            });
 
         })(jQuery);
 
@@ -121,6 +209,35 @@
                 }
             });
             $("#dialog").dialog("open");
+        }
+
+
+
+
+        function DesinscribirParticipantes(grupoId, participantesId) {
+            $("#loadingDiv").show();
+            $.ajax({
+                url: "/Participante/DesInscribirParticipantes",
+                data: {grupoID:grupoId, participantes: participantesId },
+                type: "POST",
+                success: function (result) {
+                    $("#dialog").dialog("close");
+                    $("#loadingDiv").hide();
+                    document.location.reload();
+                }
+            });
+        }
+
+        function getParticipantesIdsChecked(){
+            var result = [];           
+            $('tbody tr td input[type="checkbox"]').each(function(){
+                var checked = $(this).prop('checked');
+                if(checked == true){
+                    result.push($(this).val());
+                    console.log("checkbox Selected = "+ $(this).val());
+                }
+            });      
+            return result;        
         }
 
 

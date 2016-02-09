@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using CalendarioDiplomados.Models.ViewModels;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -23,6 +24,36 @@ namespace CalendarioDiplomados.Controllers
             return PartialView(grupoes.ToList());
         }
 
+
+        public ActionResult GrupoAsistencia(int grupoId) {
+            var calendariosGrupo = db.Calendarios.AsNoTracking().Select(x => new { x.GrupoID, eventos = x.eventos.Select(z => new { z.ID, z.fechaIncicio, z.CalendarioID, z.orden}) }).Where(g => g.GrupoID == grupoId).FirstOrDefault();
+            var fechasEventos = calendariosGrupo.eventos.Select(x => new { x.ID, fechaIncicio = x.fechaIncicio.ToShortDateString(), x.CalendarioID, x.orden });
+            ViewBag.fechas = new SelectList(fechasEventos.OrderBy(o => o.orden), "ID", "fechaIncicio");
+            ViewBag.grupoId = grupoId;
+            return View();
+        }
+
+
+
+        public JsonResult getAsistenciaParticipantesGrupo(int grupoId, int eventoId) {
+            List<Ausencia> ausencias = new List<Ausencia>();
+           // List<AsistenciaVM> asistencias = new List<AsistenciaVM>();
+            List<AsistenciaGrupoVm> asistencias = new List<AsistenciaGrupoVm>();
+            var participantes = db.Participantes.Select(x => new {x.ID,  x.cedula, x.nombre, grupos = x.grupos.Select(y => new { y.ID }) }).Where(g => g.grupos.Any(x => x.ID == grupoId));
+
+
+            foreach (var participante in participantes) {
+                AsistenciaGrupoVm asistencia = new AsistenciaGrupoVm();
+                asistencia.cedula = participante.cedula;
+                asistencia.nombre = participante.nombre;
+                asistencia.asistio = db.Ausencias.AsNoTracking().Select(x => new { x.eventoID, x.participanteID }).Where(g => g.eventoID == eventoId).Any(p => p.participanteID == participante.ID) ? false : true;
+                asistencia.participanteId = participante.ID;
+                asistencias.Add(asistencia);
+            }
+
+            var data = asistencias.Select(x => new {x.participanteId, x.cedula, x.nombre, x.asistio });
+            return Json(data ,JsonRequestBehavior.AllowGet);
+        }
 
 
         // GET: Grupo

@@ -72,7 +72,7 @@ namespace CalendarioDiplomados.Controllers
                 Ausencia ausencia = new Ausencia();
                 ausencia.eventoID = eventoID;
                 ausencia.participanteID = participanteID;
-                bool isRepeated = db.Ausencias.Where(e => e.eventoID == eventoID).Any(p => p.participanteID == participanteID);
+                bool isRepeated = db.Ausencias.Select(x => new {x.eventoID, x.participanteID }).Where(e => e.eventoID == eventoID).Any(p => p.participanteID == participanteID);
                 if (!isRepeated)
                 {
                     db.Ausencias.Add(ausencia);

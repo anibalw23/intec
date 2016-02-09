@@ -12,6 +12,7 @@ namespace CalendarioDiplomados.Models
         public string nombre { get; set; }
         public string telefono { get; set; }
         public string direccion { get; set; }
+        public string correo { get; set; }
 
         public virtual ICollection<Grupo> grupos { get; set; }
     }

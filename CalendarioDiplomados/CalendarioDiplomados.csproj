@@ -213,6 +213,7 @@
     <Compile Include="Models\Participante.cs" />
     <Compile Include="Models\Recurrencia.cs" />
     <Compile Include="Models\Taller.cs" />
+    <Compile Include="Models\ViewModels\AsistenciaGrupoVm.cs" />
     <Compile Include="Models\ViewModels\AsistenciaVM.cs" />
     <Compile Include="Models\ViewModels\InscripcionVM.cs" />
     <Compile Include="Models\ViewModels\ReporteAsistenciaVM.cs" />
@@ -239,6 +240,7 @@
     <Content Include="Content\images\columns4.ico" />
     <Content Include="Content\images\diplomados.png" />
     <Content Include="Content\images\facilitadores.png" />
+    <Content Include="Content\images\hex-loader2.gif" />
     <Content Include="Content\images\logo.png" />
     <Content Include="Content\images\logo2.png" />
     <Content Include="Content\images\map-pointer2.ico" />
@@ -328,6 +330,11 @@
     <Content Include="Scripts\bootstrap-timepicker.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\c3\c3.css" />
+    <Content Include="Scripts\c3\c3.js" />
+    <Content Include="Scripts\c3\c3.min.css" />
+    <Content Include="Scripts\c3\c3.min.js" />
+    <Content Include="Scripts\dimple\dimple.v2.1.6.min.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
@@ -1707,6 +1714,7 @@
     <Content Include="Views\Reporte\Index.cshtml" />
     <Content Include="Views\Reporte\AsistenciaPorDiplomado.cshtml" />
     <Content Include="Views\Participante\ParticipanteInscripcionExcel.cshtml" />
+    <Content Include="Views\Grupo\GrupoAsistencia.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -76,14 +76,15 @@ namespace CalendarioDiplomados.Controllers
             string dia = Request.Form["diaCheckbox"];
 
             int eventOrder = 0;
-           // int weeks = Math.Abs((Int32) (calendario.fechaInicio - calendario.fechaFin).TotalDays / 7); // so es con fecha-inicio -- fecha fin
-           
+            // int weeks = Math.Abs((Int32) (calendario.fechaInicio - calendario.fechaFin).TotalDays / 7); // so es con fecha-inicio -- fecha fin
+
             int diacount = 1;
-            if (dia != null && dia != "") {
+            if (dia != null && dia != "")
+            {
                 diacount = dia.Split(',').Count();
             }
-            int weeks = (talleres.Count()/(diacount)) - 1;
-            float weeksDays = ( (float)(talleres.Count()) / (float)diacount) - 1;
+            int weeks = (talleres.Count() / (diacount)) - 1;
+            float weeksDays = ((float)(talleres.Count()) / (float)diacount) - 1;
             int daysLeft = (int)((decimal)((weeksDays) % 1) * 10);
             if (daysLeft > 0)
             {
@@ -95,7 +96,7 @@ namespace CalendarioDiplomados.Controllers
                 db.Calendarios.Add(calendario);
                 db.SaveChanges();
                 int k = 0;
-                for(k = 0; k <= weeks; k++)
+                for (k = 0; k <= weeks; k++)
                 {
                     if (dia != null && dia != "")
                     {
@@ -113,12 +114,15 @@ namespace CalendarioDiplomados.Controllers
                             eventOrder++;
                             //Agrega automaticamente los talleres a los eventos
                             talleres = talleres.OrderBy(o => o.orden).ToList();
-                            try { 
+                            try
+                            {
                                 Taller taller = talleres.Where(o => o.orden == (evento.orden + 1)).SingleOrDefault();
                                 int tallerID = taller.ID;
-                                if(tallerID != 0){
+                                if (tallerID != 0)
+                                {
                                     evento.TallerID = tallerID;
-                                    if(taller.FacilitadorID != 0){
+                                    if (taller.FacilitadorID != 0)
+                                    {
                                         evento.FacilitadorID = taller.FacilitadorID;
                                     }
                                     foreach (var diasEvento in dias)
@@ -152,7 +156,8 @@ namespace CalendarioDiplomados.Controllers
                                     eventos.Add(evento);
                                 }
                             }
-                            catch(Exception e){
+                            catch (Exception e)
+                            {
                                 ModelState.AddModelError("", e.Message);
                             }
 
@@ -167,12 +172,14 @@ namespace CalendarioDiplomados.Controllers
                 db.Diplomadoes.Attach(diplomado);
                 var entry = db.Entry(diplomado);
                 bool fechaDipomadoChanged = false;
-                if(diplomado.fechaFin < calendario.fechaFin){
+                if (diplomado.fechaFin < calendario.fechaFin)
+                {
                     diplomado.fechaFin = calendario.fechaFin;
                     entry.Property(e => e.fechaFin).IsModified = true;
                     fechaDipomadoChanged = true;
                 }
-                if(diplomado.fechaInicio > calendario.fechaInicio){
+                if (diplomado.fechaInicio > calendario.fechaInicio)
+                {
                     diplomado.fechaInicio = calendario.fechaInicio;
                     entry.Property(e => e.fechaInicio).IsModified = true;
                     fechaDipomadoChanged = true;
@@ -190,7 +197,7 @@ namespace CalendarioDiplomados.Controllers
         }
 
 
-        
+
 
         // GET: Calendario/Edit/5
         public ActionResult Edit(int? id, int grupoID)
@@ -220,15 +227,16 @@ namespace CalendarioDiplomados.Controllers
                 db.Entry(calendario).State = EntityState.Modified;
                 db.SaveChanges();
                 //Aqui debe modificar las fechas de los talleres igualmente
-                List<Evento> eventosCal = db.Eventoes.Where(c => c.CalendarioID == calendario.ID).OrderBy(f => f.fechaIncicio).ToList(); 
+                List<Evento> eventosCal = db.Eventoes.Where(c => c.CalendarioID == calendario.ID).OrderBy(f => f.fechaIncicio).ToList();
                 int k = 0;
-                foreach(var evt in eventosCal){
+                foreach (var evt in eventosCal)
+                {
                     evt.fechaIncicio = calendario.fechaInicio.AddDays(k * 7);
                     db.Entry(evt).State = EntityState.Modified;
                     db.SaveChanges();
                     k++;
                 }
-                return RedirectToAction("Details", "Grupo", new { id = calendario.GrupoID});
+                return RedirectToAction("Details", "Grupo", new { id = calendario.GrupoID });
             }
             ViewBag.GrupoID = new SelectList(db.Grupoes, "ID", "nombre", calendario.GrupoID);
             return View(calendario);
@@ -259,7 +267,7 @@ namespace CalendarioDiplomados.Controllers
             db.SaveChanges();
 
             Grupo grupo = db.Grupoes.Find(calendario.GrupoID);
-            return RedirectToAction("Details", "Grupo", new {id = grupo.ID });
+            return RedirectToAction("Details", "Grupo", new { id = grupo.ID });
         }
 
         protected override void Dispose(bool disposing)

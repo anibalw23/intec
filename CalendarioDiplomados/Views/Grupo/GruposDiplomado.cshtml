@@ -36,6 +36,13 @@
                         <i class="fa fa-trash" style="font-size:1.5em; color:darkred"></i>
                     </a>
                 }
+                <a style="margin-left:20px;" href="@Url.Action("GrupoAsistencia", "Grupo", new { grupoId = item.ID })">
+                    <i class="fa fa-calendar-check-o" style="font-size:1.5em;">Registro de Asistencia</i>
+                    @*<i class="fa fa-eye" style="font-size:1.5em"></i>*@
+                </a>
+
+
+
             </td>
         </tr>
     }
