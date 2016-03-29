@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using System.Threading.Tasks;
+using CalendarioDiplomados.Models.ViewModels;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -17,9 +19,86 @@ namespace CalendarioDiplomados.Controllers
 
         public ActionResult CalendarioGrupo(int grupoID)
         {
-            ViewBag.grupoID = grupoID;
+            ViewBag.GrupoID = grupoID;
             var calendarios = db.Calendarios.AsNoTracking().Where(g => g.GrupoID == grupoID).Include(c => c.Grupo);
             return PartialView(calendarios.ToList());
+        }
+
+        public ActionResult CalendarioImportar(int grupoID)
+        {
+            ImportarCalendarioGrupoVM calendario = new ImportarCalendarioGrupoVM();
+            calendario.grupoDest = grupoID;
+            var grupos = db.Grupoes.Where(d => d.Diplomado.grupos.Any(z => z.ID == grupoID)).Select(x => new { x.ID, x.nombre}).ToList();
+            ViewBag.grupoSrc = grupoID;
+            ViewBag.GrupoID = new SelectList(grupos, "ID", "nombre");
+            return View(calendario);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CalendarioImportar(ImportarCalendarioGrupoVM calendarioVm)
+        {
+
+            int grupoDest = calendarioVm.grupoDest;
+            int calendarioId = calendarioVm.calendarioId;
+            if (grupoDest == 0 || calendarioId == 0)
+            {
+                ModelState.AddModelError("Error", "Seleccione el grupo o el calendario!");
+                return View();
+            }
+            else {
+                Grupo grupo = await db.Grupoes.FindAsync(grupoDest);
+                Calendario calendario = await db.Calendarios.FindAsync(calendarioId);
+                if (grupo != null)
+                {
+                    List<Evento> eventos = new List<Evento>();
+                    eventos = calendario.eventos.ToList();
+                    Calendario calendarioNew = new Calendario();
+                    calendarioNew.eventos = new List<Evento>();
+                    foreach (var evento in eventos) {
+                        calendario.eventos.Add(new Evento {Chofer = evento.Chofer, ChoferID = evento.ChoferID,duracion = evento.duracion, Facilitador = evento.Facilitador,
+                                                            FacilitadorID = evento.FacilitadorID, fechaFin = evento.fechaFin, fechaIncicio = evento.fechaIncicio,
+                                                            orden = evento.orden, TallerID = evento.TallerID, Taller = evento.Taller,  
+                                                            isDomingo= evento.isDomingo, isJueves = evento.isJueves, isLunes = evento.isLunes, isMartes = evento.isMartes, isMiercoles = evento.isMiercoles, isSabado = evento.isSabado, isViernes = evento.isViernes,
+                                                            });
+                    }
+
+                    calendarioNew.eventos = new List<Evento>();
+                    calendarioNew.eventos = eventos;
+                    calendarioNew.fechaInicio = eventos.Select(x => new { x.fechaIncicio }).Min(f => f.fechaIncicio);
+                    calendarioNew.fechaFin = eventos.Select(x => new { x.fechaIncicio }).Max(f => f.fechaIncicio);
+                    calendarioNew.GrupoID = grupoDest;
+                    calendarioNew.nombre = calendario.nombre;
+                    db.Calendarios.Add(calendarioNew);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction("Details", "Grupo", new { id = grupoDest, diplomadoID = grupo.DiplomadoID });
+                }                
+
+            }        
+
+            return View();
+        }
+
+
+        public JsonResult getCalendarioByGrupo(int grupoID)
+        {
+            if (grupoID != 0)
+            {
+                var calendarios = db.Calendarios.Select(x => new { x.GrupoID, x.ID, x.nombre }).Where(d => d.GrupoID == grupoID);
+                var result = new
+                {
+                    data = calendarios,
+                };
+
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var result = new
+                {
+                    data = "ERROR",
+                };
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
         }
 
 
@@ -58,7 +137,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Calendario calendario)
+        public async Task <ActionResult> Create(Calendario calendario)
         {
 
 
@@ -68,7 +147,7 @@ namespace CalendarioDiplomados.Controllers
             Diplomado diplomado = db.Diplomadoes.Find(grupo.DiplomadoID);
 
 
-            List<Modulo> modulos = db.Moduloes.Where(c => c.DiplomadoID == grupo.DiplomadoID).ToList();
+            List<Modulo> modulos = await db.Moduloes.Where(c => c.DiplomadoID == grupo.DiplomadoID).ToListAsync();
             foreach (var m in modulos)
             {
                 talleres.AddRange(m.talleres);
@@ -166,7 +245,7 @@ namespace CalendarioDiplomados.Controllers
 
                 }
                 db.Eventoes.AddRange(eventos);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
 
                 //Para actualizar la fecha de fin del diplomado
                 db.Diplomadoes.Attach(diplomado);

@@ -215,7 +215,11 @@
     <Compile Include="Models\Taller.cs" />
     <Compile Include="Models\ViewModels\AsistenciaGrupoVm.cs" />
     <Compile Include="Models\ViewModels\AsistenciaVM.cs" />
+    <Compile Include="Models\ViewModels\GrupoVm.cs" />
+    <Compile Include="Models\ViewModels\ImportarCalendarioGrupoVM.cs" />
     <Compile Include="Models\ViewModels\InscripcionVM.cs" />
+    <Compile Include="Models\ViewModels\ParticipantesMoverVm.cs" />
+    <Compile Include="Models\ViewModels\ParticipanteVm.cs" />
     <Compile Include="Models\ViewModels\ReporteAsistenciaVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -1567,6 +1571,7 @@
     <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.filter.min.js" />
     <Content Include="Scripts\jqueryMultiSelect\jquery.multiselect.min.js" />
     <Content Include="Scripts\less-1.4.1.min.js" />
+    <Content Include="Scripts\list js\list.min.js" />
     <Content Include="Scripts\markdown.js" />
     <Content Include="Scripts\MarkdownDeep License.txt" />
     <Content Include="Scripts\MarkdownDeep Quick Reference.txt" />
@@ -1715,6 +1720,8 @@
     <Content Include="Views\Reporte\AsistenciaPorDiplomado.cshtml" />
     <Content Include="Views\Participante\ParticipanteInscripcionExcel.cshtml" />
     <Content Include="Views\Grupo\GrupoAsistencia.cshtml" />
+    <Content Include="Views\Calendario\CalendarioImportar.cshtml" />
+    <Content Include="Views\Participante\ParticipantesMover.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

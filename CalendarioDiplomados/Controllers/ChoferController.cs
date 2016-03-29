@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using System.Threading.Tasks;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -16,9 +17,9 @@ namespace CalendarioDiplomados.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: Chofer
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            return View(db.Chofers.ToList());
+            return View(await db.Chofers.ToListAsync());
         }
 
         // GET: Chofer/Details/5
@@ -47,12 +48,12 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Chofer chofer)
+        public async Task<ActionResult> Create([Bind(Include = "ID,cedula,nombre,telefono,direccion")] Chofer chofer)
         {
             if (ModelState.IsValid)
             {
                 db.Chofers.Add(chofer);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 

@@ -5,15 +5,11 @@ using System.Web;
 
 namespace CalendarioDiplomados.Models.ViewModels
 {
-    public class AsistenciaGrupoVm
+    public class ParticipanteVm
     {
-
-        public int participanteId { get; set; }
-        public int eventoId { get; set; }
+        public int ID { get; set; }
         public string cedula { get; set; }
         public string nombre { get; set; }
-        public bool asistioManana { get; set; }
-        public bool asistioTarde { get; set; }
-    }
 
+    }
 }

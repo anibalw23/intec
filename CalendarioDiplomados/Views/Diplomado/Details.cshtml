@@ -259,145 +259,132 @@
     <script src="~/Scripts/fullcalendar-scheduler-1.0.0/scheduler.js"></script>
 
     <script type="text/javascript">
-        var eventosArr= new Array();
-        var fechasOrder = new Array();
-        var orderDate = 0;
-        var kmax = 0;
-        var isFirst = 0;
-        $(function () {
-            $.post("/Evento/GetEventosDiplomado?diplomadoID=" + @Model.ID, function (data) {
-                var tempRecurso = "";
-                //header de las fechas
-                $.each(data.fechas, function(i, value) {
-                    $("#trHead").append("<th id='fecha_" + i +"'>"+ value + "</th>");
-                    var dict = {date: value, orden: i};
-                    fechasOrder.push(dict);
-                }),
+    var BASE_URL = '@Url.Content("~/")';
+    var eventosArr= new Array();
+    var fechasOrder = new Array();
+    var orderDate = 0;
+    var kmax = 0;
+    var isFirst = 0;
+    $(function () {
+
+        $.post('@Url.Action("GetEventosDiplomado", "Evento")', { diplomadoID:  @Model.ID }).done ( function (data) {
+            var tempRecurso = "";
+            //header de las fechas
+            $.each(data.fechas, function(i, value) {
+                $("#trHead").append("<th id='fecha_" + i +"'>"+ value + "</th>");
+                var dict = {date: value, orden: i};
+                fechasOrder.push(dict);
+            }),
 
 
-                $.each(data.result, function(j, item) {
-                    var isRepeated =  false;
-                    var poner = false;
+            $.each(data.result, function(j, item) {
+                var isRepeated =  false;
+                var poner = false;
 
-                    if(tempRecurso != item.resourceName){
-                        tempRecurso = item.resourceName;
-                        kmax = 0;
-                        $("#tableEventos").append("<tr id='recurso_" + item.resourceId+"' ><td>"+ item.title + "</td>");
-
-
-                        for(var k = kmax; k < fechasOrder.length; k++){
-                            if(fechasOrder[k].date == item.start){
-                                poner = true;
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
-
-                                kmax = k+1;
-                                console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                                break;
-                            }
-                            else{
-                                poner = false;
-                                $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
-                                console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                            }
-                        }
+                if(tempRecurso != item.resourceName){
+                    tempRecurso = item.resourceName;
+                    kmax = 0;
+                    $("#tableEventos").append("<tr id='recurso_" + item.resourceId+"' ><td>"+ item.title + "</td>");
 
 
-                    }
-                    else{
-                        for(var k = kmax; k < fechasOrder.length; k++){
-                            if(fechasOrder[k].date == item.start){
-                                poner = true;
-                                $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
+                    for(var k = kmax; k < fechasOrder.length; k++){
+                        if(fechasOrder[k].date == item.start){
+                            poner = true;
+                            $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
 
-                                kmax = k+1;
-                                console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                                break;
-                            }
-                            else{
-                                poner = false;
-                                $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
-                                console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
-                            }
-
-                        }
-
-
-                        $("#recurso_" + item.resourceId).append("</tr>");
-                    }
-
-
-
-
-                    for(var j=0; j< eventosArr.length; j++){
-                        if(eventosArr[j].start == item.start){
-                            isRepeated = true;
+                            kmax = k+1;
+                            console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
                             break;
                         }
-                    }
-                    if(isRepeated == false){
-                        //$("#trHead").append("<th id='evento_" + item.id +"'>"+ item.start + "</th>");
-                        eventosArr.push(item);
-
-
-                    }
-
-
-                }),
-
-                //$.each(data.resources, function(i, item) {
-                //    $("#tableEventos").append("<tr id='recurso_" + item.id+"' ><td>"+ item.title + "</td>");
-                //    for(var i = 0; i < eventosArr.length; i++){
-                //        var thStart =  $("#evento_" + eventosArr[i].id).text();
-                //        if(eventosArr[i].resourceId == item.id){
-                //            $("#recurso_" + item.id).append("<td><i class='fa fa-check' style='color:green;'></i></td>");
-                //        }
-                //        else{
-                //            $("#recurso_" + item.id).append("<td><i class='fa fa-asterisk' style='color:red;'></i></td>");
-                //        }
-                //    }
-                //    $("#recurso_" + item.resourceId).append("</tr>");
-
-                //}),
-
-
-                $('#calendar').fullCalendar({
-                    header: {
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'timelineDay,timelineTenDay,timelineMonth,timelineYear',
-                    },
-
-                    views: {
-                        timelineTenDay: {
-                            type: 'timeline',
-                            duration: { weeks: 2 }
+                        else{
+                            poner = false;
+                            $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
+                            console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
                         }
-                    },
+                    }
 
 
-                    resourceColumns: [
-                            {
-                                labelText: 'Grupos',
-                                field: 'title'
-                            },
+                }
+                else{
+                    for(var k = kmax; k < fechasOrder.length; k++){
+                        if(fechasOrder[k].date == item.start){
+                            poner = true;
+                            $("#recurso_" + item.resourceId).append("<td>C<i class='fa fa-check' style='color:green;'></i> <span> Taller: " + item.tallerNombre + " </span> <span> Facilitador: " + item.Facilitador + " </span></td>");
 
-				            {
-				                labelText: 'Participantes',
-				                field: 'participantes'
-				            }
-                    ],
+                            kmax = k+1;
+                            console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
+                            break;
+                        }
+                        else{
+                            poner = false;
+                            $("#recurso_" + item.resourceId).append("<td>X<i class='fa fa-asterisk' style='color:red;'></i></td>");
+                            console.log( "start = " +  item.start + ", fechasOrder = " + fechasOrder[k].date  +", k =" + k + ", poner = " + poner + ", Kmax = " + kmax);
+                        }
 
-                    resourceAreaWidth: '25%',
-                    resourceLabelText: 'Grupos',
-                    resources: data.resources,
-                    events: data.result
-                });
+                    }
+
+
+                    $("#recurso_" + item.resourceId).append("</tr>");
+                }
+
+
+
+
+                for(var j=0; j< eventosArr.length; j++){
+                    if(eventosArr[j].start == item.start){
+                        isRepeated = true;
+                        break;
+                    }
+                }
+                if(isRepeated == false){
+                    //$("#trHead").append("<th id='evento_" + item.id +"'>"+ item.start + "</th>");
+                    eventosArr.push(item);
+
+
+                }
+
+
+            }),
+
+
+            $('#calendar').fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'timelineDay,timelineTenDay,timelineMonth,timelineYear',
+                },
+
+                views: {
+                    timelineTenDay: {
+                        type: 'timeline',
+                        duration: { weeks: 2 }
+                    }
+                },
+
+
+                resourceColumns: [
+                        {
+                            labelText: 'Grupos',
+                            field: 'title'
+                        },
+
+                        {
+                            labelText: 'Participantes',
+                            field: 'participantes'
+                        }
+                ],
+
+                resourceAreaWidth: '25%',
+                resourceLabelText: 'Grupos',
+                resources: data.resources,
+                events: data.result
             });
-
-
-
         });
-    </script>
+
+
+
+    });
+</script>
 }
 
 

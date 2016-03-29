@@ -17,7 +17,8 @@ namespace CalendarioDiplomados.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
 
-        public ActionResult GruposDiplomado(int diplomadoId) {
+        public ActionResult GruposDiplomado(int diplomadoId)
+        {
 
             ViewBag.diplomadoID = diplomadoId;
             var grupoes = db.Grupoes.Where(dp => dp.DiplomadoID == diplomadoId).Include(g => g.Diplomado);
@@ -25,34 +26,53 @@ namespace CalendarioDiplomados.Controllers
         }
 
 
-        public ActionResult GrupoAsistencia(int grupoId) {
-            var calendariosGrupo = db.Calendarios.AsNoTracking().Select(x => new { x.GrupoID, eventos = x.eventos.Select(z => new { z.ID, z.fechaIncicio, z.CalendarioID, z.orden}) }).Where(g => g.GrupoID == grupoId).FirstOrDefault();
-            var fechasEventos = calendariosGrupo.eventos.Select(x => new { x.ID, fechaIncicio = x.fechaIncicio.ToShortDateString(), x.CalendarioID, x.orden });
-            ViewBag.fechas = new SelectList(fechasEventos.OrderBy(o => o.orden), "ID", "fechaIncicio");
+        public ActionResult GrupoAsistencia(int grupoId)
+        {
+            if (grupoId == null || grupoId == 0) {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var calendariosGrupo = db.Calendarios.AsNoTracking().Select(x => new { x.GrupoID, eventos = x.eventos.Select(z => new { z.ID, z.fechaIncicio, z.CalendarioID, z.orden }) }).Where(g => g.GrupoID == grupoId).FirstOrDefault();
+            var fechasEventos = calendariosGrupo != null ? calendariosGrupo.eventos.Select(x => new { x.ID, fechaIncicio = x.fechaIncicio.Day + "/" + x.fechaIncicio.Month.ToString() + "/" + x.fechaIncicio.Year, x.CalendarioID, x.orden }) : null;
+
+
+            if (fechasEventos != null)
+            {
+                ViewBag.fechas = new SelectList(fechasEventos.OrderBy(o => o.orden), "ID", "fechaIncicio");
+            }
+            else {
+                List<Evento> eventos = new List<Evento>();
+                SelectList selectList = new SelectList(eventos.Select(x => new { x.ID, x.fechaIncicio }), "ID", "fechaIncicio");
+                ViewBag.fechas = selectList;
+            }
+           
             ViewBag.grupoId = grupoId;
             return View();
         }
 
 
 
-        public JsonResult getAsistenciaParticipantesGrupo(int grupoId, int eventoId) {
+        public JsonResult getAsistenciaParticipantesGrupo(int grupoId, int eventoId)
+        {
             List<Ausencia> ausencias = new List<Ausencia>();
-           // List<AsistenciaVM> asistencias = new List<AsistenciaVM>();
+            // List<AsistenciaVM> asistencias = new List<AsistenciaVM>();
             List<AsistenciaGrupoVm> asistencias = new List<AsistenciaGrupoVm>();
-            var participantes = db.Participantes.Select(x => new {x.ID,  x.cedula, x.nombre, grupos = x.grupos.Select(y => new { y.ID }) }).Where(g => g.grupos.Any(x => x.ID == grupoId));
+            var participantes = db.Participantes.Select(x => new { x.ID, x.cedula, x.nombre, grupos = x.grupos.Select(y => new { y.ID }) }).Where(g => g.grupos.Any(x => x.ID == grupoId));
 
 
-            foreach (var participante in participantes) {
+            foreach (var participante in participantes)
+            {
                 AsistenciaGrupoVm asistencia = new AsistenciaGrupoVm();
                 asistencia.cedula = participante.cedula;
                 asistencia.nombre = participante.nombre;
-                asistencia.asistio = db.Ausencias.AsNoTracking().Select(x => new { x.eventoID, x.participanteID }).Where(g => g.eventoID == eventoId).Any(p => p.participanteID == participante.ID) ? false : true;
+                asistencia.asistioManana = db.Ausencias.AsNoTracking().Select(x => new { x.eventoID, x.participanteID, x.TandaAusencia }).Where(g => g.eventoID == eventoId).Where(m => m.TandaAusencia == TandaAusencia.manana).Any(p => p.participanteID == participante.ID) ? false : true;
+                asistencia.asistioTarde = db.Ausencias.AsNoTracking().Select(x => new { x.eventoID, x.participanteID, x.TandaAusencia }).Where(g => g.eventoID == eventoId).Where(m => m.TandaAusencia == TandaAusencia.tarde).Any(p => p.participanteID == participante.ID) ? false : true;
                 asistencia.participanteId = participante.ID;
                 asistencias.Add(asistencia);
             }
 
-            var data = asistencias.Select(x => new {x.participanteId, x.cedula, x.nombre, x.asistio });
-            return Json(data ,JsonRequestBehavior.AllowGet);
+            var data = asistencias.Select(x => new { x.participanteId, x.cedula, x.nombre, x.asistioManana, x.asistioTarde }).OrderBy(n => n.nombre);
+            return Json(data, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -79,7 +99,7 @@ namespace CalendarioDiplomados.Controllers
         }
 
         // GET: Grupo/Create
-        public ActionResult Create( int diplomadoID)
+        public ActionResult Create(int diplomadoID)
         {
             ViewBag.diplomadoID = diplomadoID;//new SelectList(db.Diplomadoes, "ID", "nombre");
             return View();
@@ -96,7 +116,7 @@ namespace CalendarioDiplomados.Controllers
             {
                 db.Grupoes.Add(grupo);
                 db.SaveChanges();
-                return RedirectToAction("Details", "Diplomado", new { id = grupo.DiplomadoID});
+                return RedirectToAction("Details", "Diplomado", new { id = grupo.DiplomadoID });
             }
 
             ViewBag.DiplomadoID = new SelectList(db.Diplomadoes, "ID", "nombre", grupo.DiplomadoID);

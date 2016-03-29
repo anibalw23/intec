@@ -1,0 +1,65 @@
+﻿@model CalendarioDiplomados.Models.ViewModels.ImportarCalendarioGrupoVM
+
+
+<h2>Importar Calendario desde otro grupo</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.grupoDest);
+    
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.Label("Grupo", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.grupoSrc, (IEnumerable<SelectListItem>)ViewBag.GrupoID,  new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.grupoSrc, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Calendario", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownListFor(model => model.calendarioId, null, new { @id = "calendarioId", @class = "form-control" });*@
+                <select id="calendarioId" name="calendarioId" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" id="btnImpotar" value="Importar" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script type="text/javascript">
+        jQuery(function ($) {
+            $("#grupoSrc").on('change', function () {
+                var selectedGrupo = $(this).val();
+                $("#calendarioId").html("");
+                if (selectedGrupo != undefined && selectedGrupo != 0) {
+                    $.ajax({
+                        dataType: "json",
+                        url: '@Url.Action("getCalendarioByGrupo", "Calendario")' + "?grupoID=" + selectedGrupo, success: function (data) {
+                            $.each(data.data, function (key, val) {
+                                $("#calendarioId").append("<option value='" + val.ID + "'>" + val.nombre + " </option>");
+                            });
+                        }
+
+                    });
+                }
+
+
+            });
+
+          
+
+
+        });
+    </script>
+}

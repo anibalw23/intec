@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -18,15 +19,15 @@ namespace CalendarioDiplomados.Controllers
 
 
         [HttpPost]
-        public JsonResult GetEventosDiplomado(int diplomadoID)
+        public async Task<JsonResult> GetEventosDiplomado(int diplomadoID)
         {
             List<Calendario> calendarios = new List<Calendario>();
             List<Evento> eventos = new List<Evento>();
             List<Grupo> grupos = new List<Grupo>();
 
 
-            calendarios = db.Calendarios.AsNoTracking().Where(d => d.Grupo.DiplomadoID == diplomadoID).Include(e => e.eventos).ToList();
-            grupos = db.Grupoes.AsNoTracking().Where(d => d.DiplomadoID == diplomadoID).ToList();
+            calendarios = await db.Calendarios.AsNoTracking().Where(d => d.Grupo.DiplomadoID == diplomadoID).Include(e => e.eventos).ToListAsync();
+            grupos = await db.Grupoes.AsNoTracking().Where(d => d.DiplomadoID == diplomadoID).ToListAsync();
 
             foreach (var cal in calendarios)
             {
@@ -34,10 +35,10 @@ namespace CalendarioDiplomados.Controllers
                 {
                     if (evt.TallerID != null)
                     {
-                        evt.Taller = db.Tallers.Find(evt.TallerID);
+                        evt.Taller =  await db.Tallers.FindAsync(evt.TallerID);
                     }
                     if(evt.FacilitadorID != null){
-                        evt.Facilitador = db.Facilitadors.Find(evt.FacilitadorID);                    
+                        evt.Facilitador = await db.Facilitadors.FindAsync(evt.FacilitadorID);                    
                     }                   
                     eventos.Add(evt);
                 }
@@ -211,7 +212,7 @@ namespace CalendarioDiplomados.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Evento evento)
+        public async Task <ActionResult> Create(Evento evento)
         {
             List<Evento> eventosCal = new List<Evento>();
             if (ModelState.IsValid)
@@ -220,7 +221,7 @@ namespace CalendarioDiplomados.Controllers
                 DateTime eventoFechaAnterior = evento.fechaIncicio;
                 evento.fechaFin = evento.fechaIncicio;
                 db.Eventoes.Add(evento);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
 
                 db.Entry(evento).State = EntityState.Detached;
 
@@ -232,7 +233,7 @@ namespace CalendarioDiplomados.Controllers
                 if (isCheked == 1)
                 {
                     //Si cambia de fecha
-                    Calendario calendario = db.Calendarios.AsNoTracking().Where(i => i.ID == evento.CalendarioID).SingleOrDefault();
+                    Calendario calendario = await db.Calendarios.AsNoTracking().Where(i => i.ID == evento.CalendarioID).SingleOrDefaultAsync();
                     eventosCal.AddRange(calendario.eventos.Where(ev => ev.ID != evento.ID).Where(f => f.fechaIncicio >= eventoFechaAnterior).OrderBy(f => f.fechaIncicio).ToList());
 
                     //Prueba Temporal de  Algoritmo de desplazamiento
@@ -279,8 +280,8 @@ namespace CalendarioDiplomados.Controllers
                     DateTime dateMin = new DateTime();
                     DateTime dateMax = new DateTime();
 
-                    dateMin = db.Eventoes.AsNoTracking().Where(c => c.CalendarioID == evento.CalendarioID).Min(d => d.fechaIncicio);
-                    dateMax = db.Eventoes.AsNoTracking().Where(c => c.CalendarioID == evento.CalendarioID).Max(d => d.fechaIncicio);
+                    dateMin = await db.Eventoes.AsNoTracking().Where(c => c.CalendarioID == evento.CalendarioID).MinAsync(d => d.fechaIncicio);
+                    dateMax = await db.Eventoes.AsNoTracking().Where(c => c.CalendarioID == evento.CalendarioID).MaxAsync(d => d.fechaIncicio);
                     calendario.fechaInicio = dateMin;
                     calendario.fechaFin = dateMax;
                     try { 
@@ -293,13 +294,11 @@ namespace CalendarioDiplomados.Controllers
                     // ----- End Actualizar Datos del Calendario ---
                 }
 
-
-
                 return RedirectToAction("Details", "Calendario", new { id = evento.CalendarioID });
             }
 
-            ViewBag.CalendarioID = new SelectList(db.Calendarios, "ID", "nombre", evento.CalendarioID);
-            ViewBag.TallerID = new SelectList(db.Tallers, "ID", "nombre", evento.TallerID);
+            ViewBag.CalendarioID = new SelectList(db.Calendarios.Select(x => new { x.ID, x.nombre}), "ID", "nombre", evento.CalendarioID);
+            ViewBag.TallerID = new SelectList(db.Tallers.Select(x => new { x.ID, x.nombre}), "ID", "nombre", evento.TallerID);
             return View(evento);
         }
 

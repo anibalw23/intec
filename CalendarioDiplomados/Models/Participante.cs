@@ -15,5 +15,8 @@ namespace CalendarioDiplomados.Models
         public string correo { get; set; }
 
         public virtual ICollection<Grupo> grupos { get; set; }
+
+        public virtual ICollection<Ausencia> ausencias { get; set; }
+
     }
 }

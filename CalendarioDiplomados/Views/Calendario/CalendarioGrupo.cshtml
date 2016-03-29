@@ -9,6 +9,11 @@
     <a href="@Url.Action("Create", "Calendario", new { grupoID = ViewBag.grupoID })" class="btn btn-info">
         Nuevo Calendario
     </a>
+
+    <a href="@Url.Action("CalendarioImportar", "Calendario", new { grupoID = ViewBag.grupoID })" class="btn btn-success">
+        Importar de otro grupo
+    </a>
+
 }
 <table class="table">
     <tr>

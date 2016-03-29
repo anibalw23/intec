@@ -7,6 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using CalendarioDiplomados.Models;
+using System.Threading.Tasks;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -39,17 +40,18 @@ namespace CalendarioDiplomados.Controllers
 
 
         [HttpPost]
-        public ActionResult DeleteAusencia(int eventoID, int participanteID)
+        public async Task<ActionResult> DeleteAusencia(int eventoID, int participanteID, int tandaAusencia)
         {
 
-            if (eventoID != null && participanteID != null)
+            if (eventoID != 0 && participanteID != 0)
             {
                 Ausencia ausencia = new Ausencia();
-                ausencia = db.Ausencias.Where(e => e.eventoID == eventoID).Where(p => p.participanteID == participanteID).FirstOrDefault();
+                TandaAusencia TandaAusencia = (TandaAusencia)tandaAusencia;
+                ausencia = await db.Ausencias.Where(e => e.eventoID == eventoID).Where(p => p.participanteID == participanteID).Where(t => t.TandaAusencia == TandaAusencia).FirstOrDefaultAsync();
                 if (ausencia != null)
                 {
                     db.Ausencias.Remove(ausencia);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
 
@@ -64,19 +66,20 @@ namespace CalendarioDiplomados.Controllers
 
 
         [HttpPost]
-        public ActionResult CreateAusencia(int eventoID, int participanteID)
+        public async Task<ActionResult> CreateAusencia(int eventoID, int participanteID, int tandaAusencia)
         {
 
-            if (eventoID != null && participanteID != null)
+            if (eventoID != 0 && participanteID != 0)
             {
                 Ausencia ausencia = new Ausencia();
                 ausencia.eventoID = eventoID;
                 ausencia.participanteID = participanteID;
-                bool isRepeated = db.Ausencias.Select(x => new {x.eventoID, x.participanteID }).Where(e => e.eventoID == eventoID).Any(p => p.participanteID == participanteID);
-                if (!isRepeated)
+                ausencia.TandaAusencia = (TandaAusencia)tandaAusencia;
+                int isRepeated = await db.Ausencias.Select(x => new { x.eventoID, x.participanteID, x.TandaAusencia }).Where(e => e.eventoID == eventoID).Where(p => p.participanteID == participanteID).Where(t => t.TandaAusencia == ausencia.TandaAusencia).CountAsync();
+                if (isRepeated < 1)
                 {
                     db.Ausencias.Add(ausencia);
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
 

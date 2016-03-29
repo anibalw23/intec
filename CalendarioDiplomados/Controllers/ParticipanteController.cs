@@ -11,6 +11,7 @@ using CalendarioDiplomados.Models.ViewModels;
 using System.Text;
 using System.IO;
 using System.Data.OleDb;
+using System.Threading.Tasks;
 
 namespace CalendarioDiplomados.Controllers
 {
@@ -110,6 +111,104 @@ namespace CalendarioDiplomados.Controllers
         }
 
 
+
+        public async Task<ActionResult> ParticipantesMover(int grupoSrc, int[] participantes ) {
+            ParticipantesMoverVm partcipantesMover = new ParticipantesMoverVm();
+            partcipantesMover.grupoSrcID = grupoSrc;
+            Grupo grupo = await db.Grupoes.FindAsync(grupoSrc);
+            partcipantesMover.nombreGrupo =  grupo.nombre;
+            var participantesTemp = await db.Participantes.AsNoTracking().Where(g => g.grupos.Any(x => x.ID == grupoSrc)).Where(p => participantes.Contains(p.ID)).ToListAsync();
+
+            partcipantesMover.participantes = new List<ParticipanteVm>();
+            foreach(var p in participantesTemp){
+                partcipantesMover.participantes.Add(new ParticipanteVm { ID = p.ID, cedula = p.cedula, nombre= p.nombre });
+            }
+            var grupoElegir = db.Grupoes.AsNoTracking().Where(d => d.DiplomadoID == grupo.DiplomadoID).Select(x => new { x.ID, x.DiplomadoID, x.nombre });
+            ViewBag.grupoDestID = new SelectList(grupoElegir, "ID", "nombre");
+
+            return PartialView(partcipantesMover);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ParticipantesMover(ParticipantesMoverVm participantesMover) {
+          
+            List<Participante> participantes = new List<Participante>();
+            List<int> participantesId = new List<int>();
+            int grupoDestId = 0;
+            string[] participantesIDs;
+
+
+            string grupoDestStrId = "";
+            string[] values = Request.Form.GetValues("grupoDestID");
+            if (values != null)
+            {
+                var notEmptyValues = values.Where(x => !string.IsNullOrEmpty(x));
+                if (notEmptyValues.Count() == 1)
+                    grupoDestStrId = notEmptyValues.First();
+                else
+                    grupoDestStrId = notEmptyValues.Last();
+            }
+
+            string participantesStrIDs = Request.QueryString["participantes"];
+
+            if (grupoDestStrId != null && participantesStrIDs != null) {
+                grupoDestId = Convert.ToInt32(grupoDestStrId);
+                participantesIDs = participantesStrIDs!= null? participantesStrIDs.Split(',') : new string[]{"0"};
+                foreach (var p in participantesIDs)
+                {
+                    int idParticipante = Convert.ToInt32(p);
+                    Participante participante = await db.Participantes.FindAsync(idParticipante);
+                    if (participante != null)
+                    {
+                         participantes.Add(participante);
+                    }
+                }
+            }
+            
+            Grupo grupoSrc = await db.Grupoes.FindAsync(participantesMover.grupoSrcID);
+            Grupo grupoDest = await db.Grupoes.FindAsync(grupoDestId);
+            //Borra el participante del grupo actual
+            if (grupoDest != null && grupoSrc != null & grupoSrc.ID != grupoDest.ID && participantesMover != null)
+            {
+                foreach (var participante in participantes)
+                {
+                    participante.grupos.Remove(grupoSrc);
+                    participante.grupos.Add(grupoDest);
+
+                    int ausenciasCount = participante.ausencias.Count();
+                    if (ausenciasCount > 0) {
+                        List<Ausencia> ausencias =  participante.ausencias.ToList();
+                        List<Calendario> calendarios = grupoDest.calendarios.ToList();
+                        foreach(var ausencia in ausencias){                            
+                            foreach (var calendario in calendarios.Where(e => e.eventos.Any(t => t.TallerID == ausencia.Evento.TallerID))) {
+                                Ausencia ausenciaNew = new Ausencia();
+                                ausenciaNew.Participante = participante;
+                                ausenciaNew.participanteID = participante.ID;
+                                ausenciaNew.eventoID = calendario.eventos.Where(t => t.TallerID == ausencia.Evento.TallerID).SingleOrDefault().ID;
+                                bool isRepeatedAusencia =  await db.Ausencias.Select(x => new{x.participanteID, x.eventoID}).Where(p => p.participanteID == ausenciaNew.participanteID).AnyAsync(e => e.eventoID == ausenciaNew.eventoID);
+                                if (!isRepeatedAusencia) {
+                                    participante.ausencias.Add(ausenciaNew);
+                                }                                
+                            }
+                            db.Ausencias.Remove(ausencia);
+                            db.SaveChanges();
+                        }
+                    }
+
+                    await db.SaveChangesAsync();
+                }
+            }
+            else {
+                ParticipantesMoverVm partcipantesMover = new ParticipantesMoverVm();
+                ModelState.AddModelError("Error", "Ha ocurrido un error");
+                //return PartialView(partcipantesMover);
+            }
+            
+            return RedirectToAction("Details", "Grupo", new { id = grupoSrc.ID, diplomadoID = grupoSrc.DiplomadoID });
+        }
+
+
+
         [HttpPost]
         public ActionResult DesinscribirParticipantes(int grupoID, int[] participantes)
         {
@@ -172,7 +271,7 @@ namespace CalendarioDiplomados.Controllers
                                     string cedula = "";
                                     string nombre = "";
                                     string telefono = "";
-
+                                    string email = "";
                                     for (int i = 0; i < ds.Tables[0].Rows.Count; i++)
                                     {
                                         InscripcionVM inscripcion = new InscripcionVM();
@@ -180,10 +279,12 @@ namespace CalendarioDiplomados.Controllers
                                         nombre = ds.Tables[0].Rows[i][0].ToString();
                                         cedula = ds.Tables[0].Rows[i][1].ToString();
                                         telefono = ds.Tables[0].Rows[i][2].ToString();
+                                        email = ds.Tables[0].Rows[i][3].ToString();
 
                                         inscripcion.cedula = cedula;
                                         inscripcion.nombre = nombre;
                                         inscripcion.telefono = telefono;
+                                        inscripcion.correo = email;
 
                                         inscripciones.Add(inscripcion);
                                     }
@@ -197,6 +298,8 @@ namespace CalendarioDiplomados.Controllers
             catch (Exception exp)
             {
                 var dummy = exp.Message;
+                ModelState.AddModelError("Error", dummy);
+                return View();
             }
 
             foreach (var i in inscripciones) {
@@ -204,6 +307,7 @@ namespace CalendarioDiplomados.Controllers
                 participante.cedula = i.cedula;
                 participante.nombre = i.nombre;
                 participante.telefono = i.telefono;
+                participante.correo = i.correo;
                 bool isRepeated = grupo.participantes.Any(c => c.cedula == participante.cedula);
                 if (!isRepeated) // Si no esta repetida la cedula
                 {

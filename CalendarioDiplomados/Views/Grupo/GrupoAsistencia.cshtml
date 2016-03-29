@@ -1,13 +1,15 @@
 ﻿
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.10/css/jquery.dataTables.min.css">
 
 <style>
-    .fa fa-times {    
-        color:red;
+    .fa fa-times {
+        color: red;
     }
+
     .fa fa-check {
-        color:green;    
+        color: green;
     }
 
     #loadingDiv {
@@ -22,7 +24,15 @@
         background-position: center;
         z-index: 10000000;
         opacity: 0.4;
-        filter: alpha(opacity=40); 
+        filter: alpha(opacity=40);
+    }
+
+    .search {
+        float: left;
+        margin-bottom: 30px;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
     }
 </style>
 
@@ -41,19 +51,27 @@
                 @Html.Label("Fechas del Calendario", new { @class = "" })
             </div>
             <div class="col-md-10">
-                @Html.DropDownList("fecha", (IEnumerable<SelectListItem>)ViewBag.fechas, "--Seleccione la Fecha--", new { @class = "form-control" })
+                @Html.DropDownList("fecha", (IEnumerable<SelectListItem>)ViewBag.fechas, "--Seleccione la Fecha dia/mes/año--", new { @class = "form-control" })
             </div>
         </div>
 
-        <table id="tblAsistencia" class="table table-striped" style="margin-top:100px;">
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Asistió</th>
-            </tr>
-            <tbody>
-            </tbody>
-        </table>
+
+        <div id="participantes" style="margin-top:80px;">
+            <input class="search" placeholder="Buscar por nombre" />
+            <table id="tblAsistencia" class="display" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Nombre</th>
+                        <th>Asistió Manana</th>
+                        <th>Asistió Tarde</th>
+                    </tr>
+                </thead>
+                <tbody class="list"></tbody>
+            </table>
+        </div>
+
+
     </div>
 </div>
 <div class="modal fade" id="CreateModal" tabindex="-1" role="dialog" aria-labelledby="CreateModal" aria-hidden="true">
@@ -65,16 +83,20 @@
     </div>
 </div>
 
-<div id="loadingDiv" style="margin: 0 auto;">
+<div id="loadingDiv" style="margin: 0 auto;background-image: @Url.Content("~/Content/images/hex-loader2.gif");">
 
 </div>
 
 
 @section Scripts {
     @Scripts.Render("~/bundles/jquery")
+    <script src="~/Scripts/list%20js/list.min.js"></script>
+
     <script type="text/javascript">
+        var tableAsistencia;
         $(function () {
             $("#loadingDiv").hide();
+
 
             $("#fecha").on('change', function () {
                 var value = $(this).val();
@@ -98,22 +120,37 @@
 
             $("#loadingDiv").show();
             $.ajax({
-                url: "/Grupo/getAsistenciaParticipantesGrupo",
+                url: '@Url.Action("getAsistenciaParticipantesGrupo", "Grupo")' + "?grupoId=" + grupoId + "&eventoId=" + eventoId,
                 type: "GET",
-                data: { grupoId: grupoId, eventoId: eventoId },
+                //data: { grupoId: grupoId, eventoId: eventoId },
                 success: function (result) {
-                    $("#tblAsistencia tbody").html("<tr><th>ID</th><th>Nombre</th><th>Asistió?</th></tr>");
                     $.each(result, function (k, v) {
-                        var tdAsistio = "";
-                         if (v.asistio == false) {
-                            tdAsistio = "<td id='participante_" + v.participanteId + "' onclick='quitarAusencia(" + eventoId + "," + v.participanteId + ")'> <i style='color:red;font-size:1.5em' class='fa fa-times'></i></td>";
+                        var tdAsistioManana = "";
+                        var tdAsistioTarde = "";
+                        if (v.asistioManana == false) {
+                            tdAsistioManana = "<td id='participante_" + v.participanteId + "_tanda_1' onclick='registrarAusencia(" + eventoId + "," + v.participanteId + ", 1)'> <input id='hiddenAsistio_" + v.participanteId + "_tanda_1' type ='hidden' value='" + v.asistioManana + "'> <i style='color:red; font-size:1.5em' class='fa fa-times'></i></td>";
                         }
-                        if (v.asistio == true) {
-                            tdAsistio = "<td id='participante_" + v.participanteId + "' onclick='registrarAusencia(" + eventoId + "," + v.participanteId + ")'>  <i style='color:green;font-size:1.5em' class='fa fa-check'></i></td>";
+                        if (v.asistioManana == true) {
+                            tdAsistioManana = "<td id='participante_" + v.participanteId + "_tanda_1' onclick='registrarAusencia(" + eventoId + "," + v.participanteId + ", 1)'> <input id='hiddenAsistio_" + v.participanteId + "_tanda_1' type ='hidden' value='" + v.asistioManana + "'>  <i style='color:green;font-size:1.5em' class='fa fa-check'></i></td>";
                         }
-                        $("#tblAsistencia").append("<tr><td>" + v.cedula + "</td><td>" + v.nombre + "</td>" + tdAsistio + "</tr>");
+
+                        if (v.asistioTarde == false) {
+                            tdAsistioTarde = "<td id='participante_" + v.participanteId + "_tanda_2' onclick='registrarAusencia(" + eventoId + "," + v.participanteId + ", 2)'> <input id='hiddenAsistio_" + v.participanteId + "_tanda_2' type ='hidden' value='" + v.asistioTarde + "'> <i style='color:red; font-size:1.5em' class='fa fa-times'></i></td>";
+                        }
+                        if (v.asistioTarde == true) {
+                            tdAsistioTarde = "<td id='participante_" + v.participanteId + "_tanda_2' onclick='registrarAusencia(" + eventoId + "," + v.participanteId + ", 2)'> <input id='hiddenAsistio_" + v.participanteId + "_tanda_2' type ='hidden' value='" + v.asistioTarde + "'>  <i style='color:green;font-size:1.5em' class='fa fa-check'></i></td>";
+                        }
+                        $("#tblAsistencia").append("<tr><td>" + v.cedula + "</td><td class='nombre'>" + v.nombre + "</td>" + tdAsistioManana + "<td>" + tdAsistioTarde + "</td></tr>");
+
                     });
                     $("#loadingDiv").hide();
+
+                    var options = {
+                        valueNames: ['nombre']
+                    };
+                    var userList = new List('participantes', options);
+
+
                 }
             });
 
@@ -122,24 +159,49 @@
 
 
 
-        function registrarAusencia(eventoID, participanteID) {
+        function registrarAusencia(eventoID, participanteID, tandaAusencia) {
+            var asistioState;
+            asistioState = $("#hiddenAsistio_" + participanteID + "_tanda_" + tandaAusencia).val();
+            
+            $("#hiddenAsistio_" + participanteID + "_tanda_" + tandaAusencia).val('false');
+            if (asistioState != undefined) {
+                if (asistioState == 'true') {
+                    $.ajax({
+                        url: '@Url.Action("CreateAusencia", "Ausencia")' + "?eventoID=" + eventoID + "&participanteID=" + participanteID + "&tandaAusencia=" + tandaAusencia,
+                        type: "POST",
+                        success: function (result) {
+                            $("#participante_" + participanteID + "_tanda_" + tandaAusencia).find("i").toggleClass('fa fa-times fa fa-check').css('color', 'red');
 
-           $.ajax({
-                url: "/Ausencia/CreateAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
-                type: "POST",
-                success: function (result) {
-                    $("#participante_" + participanteID).find("i").toggleClass('fa fa-times fa fa-check');
-                
+                        }
+                    });
                 }
-            });
+                else {
+
+                    $("#hiddenAsistio_" + participanteID + "_tanda_" + tandaAusencia).val('true');
+                    $.ajax({
+                        url: '@Url.Action("DeleteAusencia", "Ausencia")' + "?eventoID=" + eventoID + "&participanteID=" + participanteID + "&tandaAusencia=" + tandaAusencia,
+                        type: "POST",
+                        success: function (result) {
+                            $("#participante_" + participanteID + "_tanda_" + tandaAusencia).find("i").toggleClass('fa fa-check fa fa-times').css('color', 'green');
+
+                        }
+                    });
+                    console.log("Estado cambiado a true");
+                }
+
+            }
+
 
         }
 
-        function quitarAusencia(eventoID, participanteID) {
+        function quitarAusencia(eventoID, participanteID, element) {
             $.ajax({
-                url: "/Ausencia/DeleteAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
+                url: '@Url.Action("DeleteAusencia", "Ausencia")' + "?eventoID=" + eventoID + "&participanteID=" + participanteID,
+                //data: { eventoID: eventoID, participanteID:participanteID},
                 type: "POST",
                 success: function (result) {
+                    // $("#participante_" + participanteID).find("i").css('color', 'green');
+                    $(element).css('color', 'green');
                     $("#participante_" + participanteID).find("i").toggleClass('fa fa-check fa fa-times');
                 }
             });

@@ -61,7 +61,8 @@
 
     function registrarAusencia(eventoID, participanteID) {
         $.ajax({
-            url: "/Ausencia/CreateAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            url: '@Url.Action("CreateAusencia", "Ausencia")' + "?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            //data: { eventoID: eventoID, participanteID:participanteID},
             type: "POST",
             success: function (result) {
                 alert("Ausencia Registrada!");
@@ -73,7 +74,8 @@
 
     function quitarAusencia(eventoID, participanteID) {
         $.ajax({
-            url: "/Ausencia/DeleteAusencia?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            url: '@Url.Action("DeleteAusencia", "Ausencia")' + "?eventoID=" + eventoID + "&participanteID=" + participanteID,
+            //data: { eventoID: eventoID, participanteID:participanteID},
             type: "POST",
             success: function (result) {
                 alert("Ausencia Eliminada!");

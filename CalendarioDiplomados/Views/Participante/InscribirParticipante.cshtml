@@ -42,8 +42,8 @@
 </div>
 
 @section  Scripts{
-    
-    }
+
+}
 
 <script type="text/javascript">
 
@@ -51,7 +51,7 @@
         //$("personas_multiselectID").multiselect();
         $.ajax({
             type: "POST",
-            url: "/Participante/GetParticipantes",
+            url: '@Url.Action("GetParticipantes", "Participante")',
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (data) {
@@ -75,7 +75,8 @@
             console.log("grupoId = " + grupoId);
             console.log("selectedParticipantes = " + selectedParticipantes);
             $.ajax({
-                url: "/Participante/InscribirParticipante?grupoID=" + grupoId + "&participantesID=" + selectedParticipantes,
+                url: '@Url.Action("InscribirParticipante", "Participante")' + "?grupoID=" + grupoId + "&participantesID=" + selectedParticipantes,
+                //data: { grupoID: grupoId, participantesID: selectedParticipantes },
                 type: "POST",
                 success: function (result) {
                     $('#CreateModal').modal('toggle');

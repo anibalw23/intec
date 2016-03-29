@@ -68,7 +68,7 @@
           $('#reportGeneratorId').click(function () {
               $("#output").html("");
               $('#loading-indicator').show();
-              $.getJSON("/Evento/getEventosByDiplomado", function (data) {
+              $.getJSON("~/Evento/getEventosByDiplomado", function (data) {
                   $("#output").pivotUI(data.Records, {});
               }).done(function () {
                   $('#loading-indicator').hide();

@@ -63,7 +63,7 @@
                 <th>Teléfono</th>
                 <th></th>
             </tr>
-            @foreach (var item in Model.participantes)
+            @foreach (var item in Model.participantes) //.OrderBy(n => n.nombre)
             {
                 <tr>
                     <td>
@@ -96,6 +96,7 @@
         <div>
             <button id="btnSelectAll" type="button" class="btn btn-default">Des/Seleccionar todos</button>
             <button id="btnDesinscribirSelected" type="button" class="btn btn-default">Desinscribir Seleccionados</button>
+            <button id="btnMoverGrupoSelected"  type="button" class="btn btn-default">Mover de Grupo</button>
 
         </div>
 
@@ -120,8 +121,7 @@
     Desea desinscribir a este participante?
 </div>
 
-<div id="loadingDiv" style="margin: 0 auto;">
-
+<div id="loadingDiv" style="margin: 0 auto; background-image: @Url.Content("~/Content/images/hex-loader2.gif"); ">
 </div>
 
 
@@ -129,118 +129,141 @@
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
 
     <script type="text/javascript">
-        var checkStatus =  false;
-        function showBLPopup(url, title) {
-            $('#modalBody')
-                .load(url,
-                        function () {
-                            $('#CreateModal').modal({ show: true, backdrop: true });
-                        })
-        };
+    var checkStatus =  false;
+    function showBLPopup(url, title) {
+        $('#modalBody')
+            .load(url,
+                    function () {
+                        $('#CreateModal').modal({ show: true, backdrop: true });
+                    })
+    };
 
-        //Main Function
-        (function ($) {
-            $("#loadingDiv").hide();
+    //Main Function
+    (function ($) {
+        $("#loadingDiv").hide();
 
-            $("#dialog").dialog({
-                autoOpen: false,
-                modal: true
-            });
-            //Dialogo de confirmacion
-            $( "#dialog-confirm" ).dialog({
-                resizable: false,
-                height:200,
-                modal: true,
-                autoOpen: false,
-                buttons: {
-                    "Si": function() {
-                        $( this ).dialog( "close" );
-                        var participantesIDs = getParticipantesIdsChecked();
-                        var grupoId = $("#grupoId").val();
-                        console.log("grupoId = " + grupoId);
-                        if(grupoId != undefined && participantesIDs.length > 0){
-                            DesinscribirParticipantes(grupoId, participantesIDs);
-                        }                       
-
-                    },
-                    Cancel: function() {
-                        $( this ).dialog( "close" );
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true
+        });
+        //Dialogo de confirmacion
+        $( "#dialog-confirm" ).dialog({
+            resizable: false,
+            height:200,
+            modal: true,
+            autoOpen: false,
+            buttons: {
+                "Si": function() {
+                    $( this ).dialog( "close" );
+                    var participantesIDs = getParticipantesIdsChecked();
+                    var grupoId = $("#grupoId").val();
+                    console.log("grupoId = " + grupoId);
+                    if(grupoId != undefined && participantesIDs.length > 0){
+                        DesinscribirParticipantes(grupoId, participantesIDs);
                     }
-                }
-            });
 
-
-            $("#btnDesinscribirSelected").on('click', function(){
-                $( "#dialog-confirm" ).dialog( "open" );
-            });
-
-
-            $("#btnSelectAll").on('click', function(){
-                if(checkStatus == true){
-                    checkStatus = false;
-                }
-                else
-                {
-                    checkStatus = true;
-                }               
-                $('tbody tr td input[type="checkbox"]').each(function(){
-                    var checked = $(this).prop('checked');
-                    $(this).prop('checked', checkStatus);
-                });      
-            });
-
-        })(jQuery);
-
-        function Desinscribir(grupoId, participanteId){
-
-            $("#dialog").dialog('option', 'buttons', {
-                "Confirm": function () {
-                    $.ajax({
-                        url: "/Participante/DesInscribirParticipante?grupoID=" + grupoId + "&participanteID=" + participanteId,
-                        type: "POST",
-                        success: function (result) {
-                            $("#dialog").dialog("close");
-                            document.location.reload();
-                        }
-                    });
                 },
-                "Cancel": function () {
-                    $(this).dialog("close");
+                Cancel: function() {
+                    $( this ).dialog( "close" );
                 }
-            });
-            $("#dialog").dialog("open");
-        }
+            }
+        });
 
 
+        $("#btnDesinscribirSelected").on('click', function(){
+            $( "#dialog-confirm" ).dialog( "open" );
+        });
 
-
-        function DesinscribirParticipantes(grupoId, participantesId) {
-            $("#loadingDiv").show();
-            $.ajax({
-                url: "/Participante/DesInscribirParticipantes",
-                data: {grupoID:grupoId, participantes: participantesId },
-                type: "POST",
-                success: function (result) {
-                    $("#dialog").dialog("close");
-                    $("#loadingDiv").hide();
-                    document.location.reload();
+        $("#btnMoverGrupoSelected").on('click', function () {
+            var participantesIDs = getParticipantesIdsChecked();
+            var grupoId = $("#grupoId").val();
+            var urlIds = "";
+            $(participantesIDs).each(function (k, v) {
+                if (k == 0) {
+                    urlIds = v;
                 }
+                else {
+                    urlIds = urlIds + "&participantes=" + v;
+                }               
+               
             });
-        }
 
-        function getParticipantesIdsChecked(){
-            var result = [];           
+            console.log("btnMoverGrupoSelected ok grupoID = " + grupoId + " participanteIds = " + participantesIDs);
+            if (grupoId != undefined && participantesIDs.length > 0) {
+                showBLPopup("@Url.Action("ParticipantesMover", "Participante")" + "?grupoSrc=" + grupoId + "&participantes=" + urlIds, 'Mover Participantes');
+            }
+
+        });
+
+        $("#btnSelectAll").on('click', function(){
+            if(checkStatus == true){
+                checkStatus = false;
+            }
+            else
+            {
+                checkStatus = true;
+            }
             $('tbody tr td input[type="checkbox"]').each(function(){
                 var checked = $(this).prop('checked');
-                if(checked == true){
-                    result.push($(this).val());
-                    console.log("checkbox Selected = "+ $(this).val());
-                }
-            });      
-            return result;        
-        }
+                $(this).prop('checked', checkStatus);
+            });
+        });
+
+    })(jQuery);
+
+    function Desinscribir(grupoId, participanteId){
+
+        $("#dialog").dialog('option', 'buttons', {
+            "Confirm": function () {
+                $("#loadingDiv").show();
+                $.ajax({
+                    //url: '@Url.Action("DesInscribirParticipante", "Participante")' + "?grupoID=" + grupoId + "&participanteID=" + participanteId,
+                    data: { grupoID: grupoId, participanteID:participanteId },
+                    type: "POST",
+                    success: function (result) {
+                        $("#dialog").dialog("close");
+                        $("#loadingDiv").hide();
+                        document.location.reload();
+                    }
+                });
+            },
+            "Cancel": function () {
+                $(this).dialog("close");
+            }
+        });
+        $("#dialog").dialog("open");
+    }
 
 
 
-    </script>
+
+    function DesinscribirParticipantes(grupoId, participantesId) {
+        $("#loadingDiv").show();
+        $.ajax({
+            url: '@Url.Action("DesInscribirParticipantes", "Participante")', //+ "?grupoID=" + grupoId + "&participantes=" + participantesId,
+            data: {grupoID:grupoId, participantes: participantesId },
+            type: "POST",
+            success: function (result) {
+                $("#dialog").dialog("close");
+                $("#loadingDiv").hide();
+                document.location.reload();
+            }
+        });
+    }
+
+    function getParticipantesIdsChecked(){
+        var result = [];
+        $('tbody tr td input[type="checkbox"]').each(function(){
+            var checked = $(this).prop('checked');
+            if(checked == true){
+                result.push($(this).val());
+                console.log("checkbox Selected = "+ $(this).val());
+            }
+        });
+        return result;
+    }
+
+
+
+</script>
 }
